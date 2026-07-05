@@ -1527,7 +1527,7 @@ body.theme-wechat .load-more, body.theme-imessage .load-more {
                 </button>
             </div>
             <div class="input-box">
-                <input type="text" id="messageInput" class="main-input" placeholder="输入对话内容..." onkeypress="handleKeyPress(event)">
+                <input type="text" id="messageInput" class="main-input" placeholder="输入对话内容..." autocomplete="off" name="chat_input_random" onkeypress="handleKeyPress(event)">
             </div>
             <button class="send-btn" onclick="sendMessage()">SEND</button>
         </div>

@@ -13,21 +13,12 @@
 
 <!-- 极简版 SW 注册，放在 head 最下面即可 -->
 <script>
+// 极简版，只负责向手机证明“我有这玩意，给我亮出安装到桌面按钮”，绝不瞎刷新页面
 if ('serviceWorker' in navigator) {
-    // 每次加载都强制重新注册一遍，确保不卡死旧版本
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=' + new Date().getTime())
-            .then(reg => {
-                // 每次有更新直接强制生效
-                reg.onupdatefound = () => {
-                    const installingWorker = reg.installing;
-                    installingWorker.onstatechange = () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            window.location.reload(); // 发现新代码，直接强制刷新页面拉取！
-                        }
-                    };
-                };
-            });
+        navigator.serviceWorker.register('./sw.js')
+            .then(() => console.log('PWA 准备就绪'))
+            .catch(err => console.log('PWA 注册失败', err));
     });
 }
 </script>

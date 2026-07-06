@@ -3149,21 +3149,34 @@ theme: "light", dataId: generateUUID(), enableKeepAlive: "false", petEnabled: "f
         };
 
         function applyKeepAlive() {
-            const audio = document.getElementById('keepAliveAudio');
-            if (!audio) return;
-            if (currentSettings.enableKeepAlive === "true") {
-                audio.play().catch(e => {
-                    // 手机浏览器必须要有一次触摸才能播放音频，如果被拦截，就等用户点屏幕时悄悄播放
-                    const playOnInteract = () => {
-                        audio.play();
-                        document.removeEventListener('touchstart', playOnInteract);
-                    };
-                    document.addEventListener('touchstart', playOnInteract, { once: true });
-                });
-            } else {
-                audio.pause();
-            }
+    const audio = document.getElementById('keepAliveAudio');
+    if (!audio) return;
+    
+    if (currentSettings.enableKeepAlive === "true") {
+        // 1. 先尝试直接播放
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                // 2. 如果被系统无情拦截，就挂上“万能解锁器”
+                const unlockAudio = () => {
+                    audio.play().then(() => {
+                        // 只要播放成功了，就功成身退，卸载监听不耗性能
+                        document.removeEventListener('touchstart', unlockAudio);
+                        document.removeEventListener('touchend', unlockAudio);
+                        document.removeEventListener('click', unlockAudio);
+                    }).catch(e => {}); // 失败了就继续等下一次触摸
+                };
+                
+                // 绑定手机端所有可能的手势，只要碰了屏幕立马解锁播放！
+                document.addEventListener('touchstart', unlockAudio);
+                document.addEventListener('touchend', unlockAudio);
+                document.addEventListener('click', unlockAudio);
+            });
         }
+    } else {
+        audio.pause();
+    }
+}
         let isBatchMode = false; // 连发模式状态变量
         let customPokeList = []; // 存储自定义戳一戳
         
@@ -3653,10 +3666,22 @@ function resetProactiveTimer() {
     if (proactiveTimer) clearTimeout(proactiveTimer);
     if (currentSettings.proactiveMsgEnabled === "true") {
         let mins = parseFloat(currentSettings.proactiveMsgTime) || 5;
+        
+        // 1. 计算基础时间（毫秒）
+        let baseMs = mins * 60 * 1000;
+        
+        // 2. 加入活人感波动机制（-25% 到 +25% 之间随机跳动）
+        // Math.random() - 0.5 会产生 -0.5 到 0.5 的随机数，再乘0.5，也就是 -0.25 到 +0.25
+        let fluctuate = (Math.random() - 0.5) * 0.5; 
+        let finalMs = baseMs * (1 + fluctuate);
+        
+        // 3. 兜底保护：再怎么随机短，也不能低于 15 秒（防崩溃防疯狂刷屏）
+        if (finalMs < 15000) finalMs = 15000;
+
         proactiveTimer = setTimeout(() => {
             // 时间到了，触发 TA 讲话
             triggerYumeReply();
-        }, mins * 60 * 1000);
+        }, finalMs);
     }
 }
 // =========================
@@ -4266,17 +4291,24 @@ async function renderCardsList() {
         function formatTime(ts) { const d = new Date(ts); return String(d.getHours()).padStart(2,'0') + ":" + String(d.getMinutes()).padStart(2,'0'); }
         function formatDate(ts) { const d = new Date(ts); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
 
-        function scrollToBottom(instant = false) {
-            const container = document.getElementById('chatContainer');
-            if(instant) {
-                container.style.scrollBehavior = 'auto'; 
-                container.scrollTop = container.scrollHeight;
-                setTimeout(() => container.style.scrollBehavior = 'smooth', 50); 
-            } else {
-                container.style.scrollBehavior = 'smooth';
-                container.scrollTop = container.scrollHeight;
-            }
-        }
+function scrollToBottom(instant = false) {
+    const container = document.getElementById('chatContainer');
+    
+    // 核心修复：如果网页在后台，强制关闭滑动动画，瞬间滚到底！
+    if (document.hidden || !document.hasFocus()) {
+        instant = true;
+    }
+    
+    if(instant) {
+        container.style.scrollBehavior = 'auto'; 
+        container.scrollTop = container.scrollHeight;
+        // 延迟把平滑滚动还给它，防备切回来太快
+        setTimeout(() => { container.style.scrollBehavior = 'smooth'; }, 50); 
+    } else {
+        container.style.scrollBehavior = 'smooth';
+        container.scrollTop = container.scrollHeight;
+    }
+}
 
         const msgInput = document.getElementById('messageInput');
         msgInput.addEventListener('focus', () => setTimeout(() => scrollToBottom(false), 300));
@@ -6960,14 +6992,22 @@ async function checkUnreadLetters() {
     });
     
     // 全局悬浮提示收到来信
-    if (newArrivedCount > 0) {
-        let t = document.createElement('div');
-        t.style.cssText = 'position:fixed; top:75px; left:50%; transform:translateX(-50%); background:var(--text-color); color:var(--bg-color); padding:10px 20px; border-radius:24px; font-weight:900; font-size:0.9em; z-index:999999; box-shadow:0 6px 15px rgba(0,0,0,0.15); cursor:pointer; display:flex; align-items:center; gap:8px; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);';
-        t.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> 邮差送来了 ${newArrivedCount} 封新信件`;
-        t.onclick = () => { t.remove(); openLetterModal(); };
-        document.body.appendChild(t);
-        setTimeout(() => { if (t.parentNode) t.remove(); }, 8000);
-    }
+if (newArrivedCount > 0) {
+    let t = document.createElement('div');
+    // 增加 white-space:nowrap; 强制一行，增加 transition:opacity 0.3s; 做淡出
+    t.style.cssText = 'position:fixed; top:75px; left:50%; transform:translateX(-50%); background:var(--text-color); color:var(--bg-color); padding:10px 20px; border-radius:24px; font-weight:900; font-size:0.9em; z-index:999999; box-shadow:0 6px 15px rgba(0,0,0,0.15); cursor:pointer; display:flex; align-items:center; gap:8px; white-space:nowrap; transition:opacity 0.3s; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);';
+    t.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> 邮差送来了 ${newArrivedCount} 封新信件`;
+    t.onclick = () => { t.remove(); openLetterModal(); };
+    document.body.appendChild(t);
+    
+    // 停留时间改短到3.5秒（原本是8秒），并丝滑淡出
+    setTimeout(() => { 
+        if (t.parentNode) {
+            t.style.opacity = '0';
+            setTimeout(() => { if (t.parentNode) t.remove(); }, 300);
+        }
+    }, 3500); 
+}
     
     // 主动写信逻辑
     if (currentSettings.taProactiveLetter === "true") {

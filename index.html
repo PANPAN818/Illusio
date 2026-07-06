@@ -3439,8 +3439,18 @@ function requestNotifyPerm() {
         return;
     }
     Notification.requestPermission().then(perm => {
-        if (perm === "granted") showCustomConfirm("通知权限已开启！后台切出时会自动弹窗。", ()=>{});
-        else showCustomConfirm("权限被拒绝，请在手机系统设置里允许浏览器的通知权限。", ()=>{});
+        if (perm === "granted") {
+            // 授权成功，直接发一条真实系统通知测试！
+            navigator.serviceWorker.ready.then(reg => {
+                reg.showNotification("测试通知", {
+                    body: "通知权限已开启！完美收到消息啦~",
+                    icon: './icon.png',
+                    vibrate: [200, 100, 200]
+                });
+            });
+        } else {
+            showCustomConfirm("权限被拒绝，请在手机系统设置里允许浏览器的通知权限。", ()=>{});
+        }
     });
 }
 

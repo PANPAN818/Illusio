@@ -32,6 +32,7 @@ if ('serviceWorker' in navigator) {
     <style id="customFontCss"></style>
     <style id="customThemeCss"></style>
     <style id="customBubbleCss"></style>
+    <style id="customInputCss"></style>
     <style id="customFontWeightCss"></style>
     
     <style>
@@ -2181,10 +2182,11 @@ body.theme-wechat .load-more, body.theme-imessage .load-more {
             <button class="icon-btn" style="border:none; color:#ff4444; background:transparent; padding:0; box-shadow:none; font-size:1.2em;" onclick="closeThemeStoreModal()">✖</button>
         </div>
         
-        <div class="tabs" style="border-bottom: 4px solid var(--border-color); flex-shrink: 0; background: var(--bg-color);">
+        <div class="tabs" style="border-bottom: 4px solid var(--border-color); flex-shrink: 0; background: var(--bg-color); overflow-x: auto;">
             <button class="tab-btn active" id="tsTabHeader" onclick="switchThemeStoreTab('header')">顶栏排版</button>
             <button class="tab-btn" id="tsTabTheme" onclick="switchThemeStoreTab('theme')">主题风格</button>
             <button class="tab-btn" id="tsTabBubble" onclick="switchThemeStoreTab('bubble')">聊天气泡</button>
+            <button class="tab-btn" id="tsTabInput" onclick="switchThemeStoreTab('input')">底栏排版</button>
         </div>
 
         <!-- 顶栏排版区 -->
@@ -2214,35 +2216,62 @@ body.theme-wechat .load-more, body.theme-imessage .load-more {
     </div>
     <!-- 迷你预览图 -->
     <div style="background: var(--bg-color); border: 2px dashed var(--border-color); border-radius: 6px; height: 110px; display: flex; justify-content: center; align-items: center; position: relative;">
-        
         <!-- 中间头像贴贴 -->
         <div style="display:flex; z-index:2; align-items:center;">
             <div style="width:48px; height:48px; border-radius:50%; border:2px solid var(--border-color); background:var(--panel-bg); display:flex; justify-content:center; align-items:center; font-size:14px; font-weight:900; z-index:2; box-shadow:2px 2px 0 var(--border-color);">梦</div>
             <div style="width:40px; height:40px; border-radius:50%; border:2px solid var(--border-color); background:var(--panel-bg); margin-left:-14px; display:flex; justify-content:center; align-items:center; font-size:12px; font-weight:900; z-index:1; box-shadow:2px 2px 0 var(--border-color);">我</div>
         </div>
-        
         <!-- 上悬浮气泡 -->
         <div style="position:absolute; bottom:65px; background:var(--panel-bg); border:2px solid var(--border-color); border-radius:8px; padding:2px 12px; font-weight:900; font-size:0.85em; box-shadow:2px 2px 0 var(--border-color); z-index:3;">
             <span style="position:relative; z-index:2;">TA</span>
             <div style="position:absolute; bottom:-4px; left:50%; transform:translateX(-50%) rotate(45deg); width:6px; height:6px; background:var(--panel-bg); border-bottom:2px solid var(--border-color); border-right:2px solid var(--border-color);"></div>
         </div>
-        
         <!-- 下悬浮气泡 -->
         <div style="position:absolute; top:65px; background:var(--panel-bg); border:2px solid var(--border-color); border-radius:8px; padding:2px 10px; font-weight:900; font-size:0.75em; box-shadow:2px 2px 0 var(--border-color); z-index:3;">
             <div style="position:absolute; top:-4px; left:50%; transform:translateX(-50%) rotate(45deg); width:6px; height:6px; background:var(--panel-bg); border-top:2px solid var(--border-color); border-left:2px solid var(--border-color);"></div>
             <span style="position:relative; z-index:2;">我</span>
         </div>
-
     </div>
     <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyHeaderStyle('duo_bubble')">应用此排版</button>
 </div>
 
-<!-- 样式3：左头像右名字 -->
-<div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+<!-- 样式3：终极一体化大悬浮舱 -->
+<div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+    <div style="font-weight: 900; font-size: 1.1em; display:flex; justify-content:space-between; align-items:center;">
+        <span>终极一体化大悬浮舱</span>
+    </div>
+    <!-- 迷你预览图 -->
+    <div style="background: var(--bg-color); border: 2px dashed var(--border-color); border-radius: 6px; height: 140px; display: flex; justify-content: center; align-items: center; position: relative; padding: 10px;">
+        <div style="width: 100%; height: 100%; background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 4px 4px 0 var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--border-color); font-size: 14px; display:flex; justify-content:center; align-items:center; font-weight:900;">梦</div>
+                    <span style="font-size:10px; font-weight:900;">TA</span>
+                </div>
+                <div style="flex: 1; height: 2px; background: repeating-linear-gradient(to right, var(--border-color) 0, var(--border-color) 4px, transparent 4px, transparent 8px); opacity: 0.3; margin: 0 10px;"></div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-direction: row-reverse;">
+                    <div style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--border-color); font-size: 14px; display:flex; justify-content:center; align-items:center; font-weight:900;">我</div>
+                    <span style="font-size:10px; font-weight:900;">我</span>
+                </div>
+            </div>
+            <!-- 去底色并居中的5个SVG图标 -->
+            <div style="display: flex; justify-content: center; gap: 10px; padding-top: 15px;">
+                <div style="width: 16px; height: 16px; border: none; background: transparent; display:flex; justify-content:center; align-items:center;"><svg viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="var(--text-color)" stroke-width="2.5"></path></svg></div>
+                <div style="width: 16px; height: 16px; border: none; background: transparent; display:flex; justify-content:center; align-items:center;"><svg viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="var(--text-color)" stroke-width="2.5"></path><circle cx="9" cy="7" r="4" fill="none" stroke="var(--text-color)" stroke-width="2.5"></circle></svg></div>
+                <div style="width: 16px; height: 16px; border: none; background: transparent; display:flex; justify-content:center; align-items:center;"><svg viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" fill="none" stroke="var(--text-color)" stroke-width="2.5"></path></svg></div>
+                <div style="width: 16px; height: 16px; border: none; background: transparent; display:flex; justify-content:center; align-items:center;"><svg viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" fill="none" stroke="var(--text-color)" stroke-width="2.5"></path></svg></div>
+                <div style="width: 16px; height: 16px; border: none; background: transparent; display:flex; justify-content:center; align-items:center;"><svg viewBox="0 0 24 24" style="width:16px; height:16px;"><circle cx="12" cy="12" r="3" fill="none" stroke="var(--text-color)" stroke-width="2.5"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="var(--text-color)" stroke-width="2.5"></path></svg></div>
+            </div>
+        </div>
+    </div>
+    <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyHeaderStyle('giant_floating_island')">应用此排版</button>
+</div>
+
+<!-- 样式4：左头像常规版 -->
+<div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
     <div style="font-weight: 900; font-size: 1.1em; display:flex; justify-content:space-between; align-items:center;">
         <span>左头像常规版</span>
     </div>
-    <!-- 迷你预览图 -->
     <div style="background: var(--bg-color); border: 2px dashed var(--border-color); border-radius: 6px; height: 70px; display: flex; justify-content: center; align-items: center;">
         <div style="background: var(--panel-bg); border: 2px solid var(--border-color); padding: 4px 12px 4px 6px; box-shadow: 2px 2px 0 var(--border-color); border-radius: 20px; display: flex; align-items: center; gap: 6px;">
             <div style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border-color); background: var(--bg-color); display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: 900;">梦</div>
@@ -2484,6 +2513,102 @@ body.theme-wechat .load-more, body.theme-imessage .load-more {
                 <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyBubbleStyle('aurora')">应用此气泡</button>
             </div>
 
+        </div>
+
+        <!-- 底栏排版区 -->
+        <div id="tsContentInput" style="flex:1; overflow-y:auto; display:none; flex-direction:column; padding:15px; background:var(--bg-color); background-image:var(--bg-pattern); background-size:var(--bg-size); gap: 15px;">
+            <div style="text-align:center; opacity:0.6; font-size:0.8em; font-weight:900; margin-bottom:5px;">以下样式将覆盖底部的输入框排版</div>
+
+            <!-- 1. 默认底栏 -->
+            <div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-weight: 900; font-size: 1.1em; display:flex; justify-content:space-between; align-items:center;">
+                    <span>经典默认底栏</span>
+                    <span style="font-size: 0.7em; background: var(--text-color); color: var(--bg-color); padding: 2px 6px; border-radius: 4px; font-style: italic;">系统自带</span>
+                </div>
+                <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyInputStyle('default')">恢复默认</button>
+            </div>
+
+            <!-- 2. 悬浮胶囊风 -->
+            <div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-weight: 900; font-size: 1.1em;">悬浮胶囊风</div>
+                <div style="background: var(--bg-color); border: 2px dashed var(--border-color); border-radius: 6px; height: 100px; display: flex; align-items:flex-end; padding: 15px 10px; justify-content:center;">
+                    <div style="width: 100%; background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 30px; padding: 6px 6px 6px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 3px 0 var(--border-color);">
+                        <div style="display:flex; gap: 4px;">
+                            <div style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-color); background: var(--bg-color);"></div>
+                            <div style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-color); background: var(--bg-color);"></div>
+                        </div>
+                        <div style="flex: 1; height: 4px; background: var(--text-color); border-radius: 2px; margin: 0 10px; opacity: 0.2;"></div>
+                        <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--text-color);"></div>
+                    </div>
+                </div>
+                <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyInputStyle('floating_pill')">应用此排版</button>
+            </div>
+
+            <!-- 3. 硬核机甲方块 -->
+            <div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-weight: 900; font-size: 1.1em;">硬核机甲方块</div>
+                <div style="background: var(--bg-color); border: 2px dashed var(--border-color); border-radius: 6px; height: 110px; display: flex; flex-direction:column; align-items:center; padding: 10px 10px 15px 10px; justify-content:flex-end;">
+                    <div style="align-self: flex-start; background: var(--text-color); color: var(--bg-color); padding: 2px 10px; font-weight: 900; font-style: italic; font-size: 10px; transform: skewX(-10deg); margin-left: 10px; border: 2px solid var(--text-color);">SYS.INPUT</div>
+                    <div style="width: 100%; background: var(--panel-bg); border: 3px solid var(--text-color); padding: 6px; display: flex; align-items: center; justify-content: space-between; box-shadow: 4px 4px 0 var(--text-color);">
+                        <div style="width: 20px; height: 20px; border: 2px solid var(--text-color); background: var(--bg-color); box-shadow: 2px 2px 0 var(--text-color);"></div>
+                        <div style="flex: 1; border-left: 3px dashed var(--text-color); height: 16px; margin: 0 10px;"></div>
+                        <div style="background: var(--text-color); color: var(--bg-color); padding: 4px 8px; font-weight: 900; font-size: 10px; border: 2px solid var(--text-color);">SEND</div>
+                    </div>
+                </div>
+                <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyInputStyle('cyber_block')">应用此排版</button>
+            </div>
+
+            <!-- 4. 极简留白下划线 -->
+            <div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-weight: 900; font-size: 1.1em;">极简无框下划线</div>
+                <div style="background: var(--bg-color); border: 2px dashed var(--border-color); border-radius: 6px; height: 100px; display: flex; align-items:flex-end; padding: 15px; justify-content:center;">
+                    <div style="width: 100%; display: flex; align-items: flex-end; justify-content: space-between; border-top: 1px dashed var(--border-color); padding-top: 15px;">
+                        <div style="display:flex; gap: 8px;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle></svg>
+                        </div>
+                        <div style="flex: 1; border-bottom: 3px solid var(--text-color); margin: 0 10px; padding-bottom: 2px; font-weight: 900; font-size: 0.8em; opacity: 0.5;">输入内容...</div>
+                        <div style="font-weight: 900; font-size: 0.9em; font-style: italic; border-bottom: 3px solid var(--text-color);">SEND</div>
+                    </div>
+                </div>
+                <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyInputStyle('minimalist_line')">应用此排版</button>
+            </div>
+
+            <!-- 5. 全透毛玻璃 -->
+            <div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-weight: 900; font-size: 1.1em;">全透毛玻璃材质</div>
+                <!-- 用渐变色底图展示毛玻璃的效果 -->
+                <div style="background: linear-gradient(135deg, #a1c4fd, #c2e9fb); border: 2px dashed var(--border-color); border-radius: 6px; height: 100px; display: flex; align-items:flex-end; padding: 15px 10px; justify-content:center;">
+                    <div style="width: 100%; background: rgba(255,255,255,0.4); border: 2px solid rgba(255,255,255,0.6); border-radius: 20px; padding: 6px 6px 6px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 16px rgba(0,0,0,0.1);">
+                        <div style="display:flex; gap: 4px;">
+                            <div style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8);"></div>
+                        </div>
+                        <div style="flex: 1; height: 20px; background: rgba(255,255,255,0.5); border-radius: 10px; margin: 0 10px;"></div>
+                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #333; color: #fff; display: flex; justify-content:center; align-items:center; font-weight:900;">↑</div>
+                    </div>
+                </div>
+                <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyInputStyle('glassmorphism')">应用此排版</button>
+            </div>
+
+            <!-- 分割线 -->
+            <div class="setting-divider" style="margin: 5px 0;"><span>PRO 级空间解构排版</span></div>
+
+            <!-- 6. 侧边画板坞 -->
+            <div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-weight: 900; font-size: 1.1em; display:flex; justify-content:space-between;">
+                    <span>画板侧边悬浮坞</span>
+                    <span style="font-size:0.7em; background:var(--text-color); color:var(--bg-color); padding:2px 6px; border-radius:10px;">画师级</span>
+                </div>
+                <div style="background: var(--bg-color); border: 2px dashed var(--border-color); border-radius: 6px; height: 110px; display: flex; flex-direction:column; justify-content:flex-end; position:relative; padding:10px;">
+                    <div style="position:absolute; right:10px; bottom:40px; background:var(--panel-bg); border:2px solid var(--border-color); border-radius:12px; padding:4px; display:flex; flex-direction:column; gap:4px; box-shadow: 2px 2px 0 var(--border-color);">
+                        <div style="width:12px; height:12px; border:1px solid var(--border-color); border-radius:50%;"></div>
+                        <div style="width:12px; height:12px; border:1px solid var(--border-color); border-radius:50%;"></div>
+                        <div style="width:12px; height:12px; border:1px solid var(--border-color); border-radius:50%;"></div>
+                    </div>
+                    <div style="width: 80%; background: var(--panel-bg); border: 2px solid var(--border-color); border-radius:8px; height: 28px; box-shadow: 0 4px 0 var(--border-color);"></div>
+                </div>
+                <button class="outline-btn" style="margin: 0; padding: 10px;" onclick="applyInputStyle('side_dock')">应用此排版</button>
+            </div>
+            
         </div>
     </div>
 </div>
@@ -3136,6 +3261,10 @@ document.documentElement.style.setProperty('--bg-pattern', currentSettings.showD
                 document.getElementById('customBubbleCss').innerHTML += `\n${currentSettings.bubblePresetCss}`;
             }
             document.getElementById('customThemeCss').innerHTML = currentSettings.themeCss ? currentSettings.themeCss : '';
+            
+            // 自动加载预设的底栏输入框样式
+            const customInputStyle = document.getElementById('customInputCss');
+            if (customInputStyle) customInputStyle.innerHTML = currentSettings.inputPresetCss || '';
     document.body.classList.remove('theme-wechat', 'theme-imessage');
     if (currentSettings.themeStyle === 'wechat') {
         document.body.classList.add('theme-wechat');
@@ -5034,7 +5163,7 @@ document.getElementById('phoneAvatarUI').classList.add('phone-pulse');
 
 async function rejectPhoneCall(rejectedMembers) {
     isPhoneCallActive = false;
-    document.getElementById('phoneStatusUI').innerText = 'REJECTED (对方拒绝了通话)';
+    document.getElementById('phoneStatusUI').innerText = 'REJECTED';
     document.getElementById('phoneAvatarUI').classList.remove('phone-pulse');
     
     setTimeout(() => { document.getElementById('phoneCallModal').style.display = 'none'; }, 1500);
@@ -5080,7 +5209,7 @@ async function endPhoneCall() {
     // 如果这是对方打来的电话，你点击了挂断（即拒绝接听）
     if (typeof isIncomingCall !== 'undefined' && isIncomingCall) {
         isIncomingCall = false;
-        document.getElementById('phoneStatusUI').innerText = 'REJECTED (已拒绝)';
+        document.getElementById('phoneStatusUI').innerText = 'REJECTED';
         document.getElementById('phoneAvatarUI').classList.remove('phone-pulse');
         setTimeout(() => { document.getElementById('phoneCallModal').style.display = 'none'; }, 1000);
         
@@ -5096,7 +5225,7 @@ async function endPhoneCall() {
     }
 
     isPhoneCallActive = false;
-    document.getElementById('phoneStatusUI').innerText = 'CALL ENDED)';
+    document.getElementById('phoneStatusUI').innerText = 'CALL ENDED';
     setTimeout(() => {
         document.getElementById('phoneCallModal').style.display = 'none';
         document.getElementById('minimizedPhone').style.display = 'none';
@@ -7695,11 +7824,13 @@ function switchThemeStoreTab(tab) {
     document.getElementById('tsTabHeader').classList.remove('active');
     document.getElementById('tsTabTheme').classList.remove('active');
     document.getElementById('tsTabBubble').classList.remove('active');
+    document.getElementById('tsTabInput').classList.remove('active');
     
     // 隐藏所有的内容区
     document.getElementById('tsContentHeader').style.display = 'none';
     document.getElementById('tsContentTheme').style.display = 'none';
     document.getElementById('tsContentBubble').style.display = 'none';
+    document.getElementById('tsContentInput').style.display = 'none';
     
     // 根据点击点亮对应的Tab并显示内容
     if (tab === 'header') {
@@ -7711,6 +7842,9 @@ function switchThemeStoreTab(tab) {
     } else if (tab === 'bubble') {
         document.getElementById('tsTabBubble').classList.add('active');
         document.getElementById('tsContentBubble').style.display = 'flex';
+    } else if (tab === 'input') {
+        document.getElementById('tsTabInput').classList.add('active');
+        document.getElementById('tsContentInput').style.display = 'flex';
     }
 }
 
@@ -7825,6 +7959,81 @@ function renderHeaderLayout() {
                         <span style="position:relative; z-index:2; max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block;">${charName}</span>
                     </div>
                 </div>
+            </div>
+        `;
+    } else if (styleId === 'giant_floating_island') {
+        let cAvatar = currentSettings.avatarUrl ? `background-image:url(${currentSettings.avatarUrl}); color:transparent;` : '';
+        let uAvatar = currentSettings.userAvatarUrl ? `background-image:url(${currentSettings.userAvatarUrl}); color:transparent;` : '';
+        let cChar = currentSettings.avatarUrl ? '' : charName.charAt(0);
+        let uChar = currentSettings.userAvatarUrl ? '' : userName.charAt(0);
+        let radiusStyle = currentSettings.avatarShape === 'circle' ? '50%' : '6px';
+        
+        headerCenter.style.cssText = 'position:relative; display:flex; flex:1; justify-content:center; align-items:center; background:transparent; border:none; box-shadow:none; padding:0; transform:none; margin:0; height:auto; overflow:visible !important; z-index:99;';
+        
+        headerCenter.innerHTML = `
+            <style>
+                /* 彻底隐藏外面乱跑的原生按钮 */
+                .header-actions, #themeToggleBtn { display: none !important; }
+                
+                .header { padding: 12px 15px !important; display: block !important; height: auto !important; }
+                
+                .header-center-box {
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    margin: 0 !important;
+                    padding: 18px 20px !important;
+                    background: var(--panel-bg) !important;
+                    border: 4px solid var(--border-color) !important;
+                    border-radius: 24px !important;
+                    box-shadow: 6px 6px 0 var(--border-color) !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 18px !important;
+                    transform: none !important;
+                }
+
+                /* 移除背景和边框，只留SVG，间距聚拢 */
+                .board-btn {
+                    width: 24px; height: 24px;
+                    border-radius: 8px;
+                    border: none;
+                    background: transparent;
+                    color: var(--text-color);
+                    display: flex; justify-content: center; align-items: center;
+                    box-shadow: none !important; 
+                    cursor: pointer;
+                    transition: 0.15s;
+                }
+                .board-btn:active { transform: scale(0.85); opacity: 0.5; }
+                .board-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+            </style>
+
+            <!-- 第一层：头像放大，名字缩小 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                
+                <!-- 对方 -->
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 60px; height: 60px; border-radius: ${radiusStyle}; border: 3px solid var(--border-color); background-color: var(--bg-color); ${cAvatar} background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: 900;">${cChar}</div>
+                    <div style="font-weight: 900; font-size: 14px; max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${charName}</div>
+                </div>
+                
+                <!-- 中间的分割点缀线 -->
+                <div style="flex: 1; height: 3px; background: repeating-linear-gradient(to right, var(--border-color) 0, var(--border-color) 6px, transparent 6px, transparent 12px); opacity: 0.2; margin: 0 15px;"></div>
+
+                <!-- 自己 -->
+                <div style="display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;">
+                    <div style="width: 60px; height: 60px; border-radius: ${radiusStyle}; border: 3px solid var(--border-color); background-color: var(--bg-color); ${uAvatar} background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: 900;">${uChar}</div>
+                    <div style="font-weight: 900; font-size: 14px; max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right;">${userName}</div>
+                </div>
+            </div>
+
+            <!-- 第二层：修改间距变紧凑，加了往下放的 padding-top -->
+            <div style="display: flex; justify-content: center; gap: 20px; width: 100%; padding-top: 15px;">
+                <div class="board-btn" onclick="toggleTheme()" title="切换日月"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></div>
+                <div class="board-btn" onclick="openGroupModal()" title="群聊"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+                <div class="board-btn" onclick="startPhoneCall()" title="电话"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+                <div class="board-btn" onclick="openCardsModal()" title="字卡"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+                <div class="board-btn" onclick="openSettings()" title="设置"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
             </div>
         `;
     } else if (styleId === 'avatar_left') {
@@ -7992,6 +8201,154 @@ window.applyBubbleStyle = async function(styleId) {
     setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 1500);
 }
 
+window.applyInputStyle = async function(styleId) {
+    let css = '';
+    switch(styleId) {
+        case 'floating_pill':
+            css = `
+                #chatContainer ~ .input-wrapper .input-top-tag { display: none !important; }
+                #chatContainer ~ .input-wrapper { padding: 10px 15px 20px 15px !important; background: transparent !important; border-top: none !important; }
+                #chatContainer ~ .input-wrapper .input-area { background: var(--panel-bg) !important; border: 3px solid var(--border-color) !important; border-radius: 30px !important; padding: 6px 8px 6px 12px !important; box-shadow: 0 8px 20px rgba(0,0,0,0.1), 0 4px 0 var(--border-color) !important; display: flex !important; align-items: center !important; gap: 8px !important; width: 100% !important; }
+                #chatContainer ~ .input-wrapper .tool-btns { display: flex !important; gap: 4px !important; padding-left: 0 !important; }
+                #chatContainer ~ .input-wrapper .tool-icon-btn { border: none !important; background: transparent !important; box-shadow: none !important; width: 32px !important; height: 32px !important; padding: 4px !important; color: var(--text-color) !important; border-radius: 50% !important; }
+                #chatContainer ~ .input-wrapper .input-box { flex: 1 !important; border: none !important; padding: 0 4px !important; }
+                #chatContainer ~ .input-wrapper .main-input { font-size: 1.05em !important; padding: 6px 0 !important; }
+                #chatContainer ~ .input-wrapper .send-btn { border-radius: 50% !important; width: 38px !important; height: 38px !important; min-width: 38px !important; padding: 0 !important; display: flex !important; justify-content: center !important; align-items: center !important; flex-shrink: 0 !important; font-size: 0 !important; box-shadow: none !important; margin: 0 !important; border-width: 2px !important; }
+                #chatContainer ~ .input-wrapper .send-btn::after { content: ''; display: block; width: 20px; height: 20px; background-color: var(--bg-color); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>') no-repeat center / contain; mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>') no-repeat center / contain; }
+            `;
+            break;
+            
+        case 'cyber_block':
+            // 硬核机甲方块：黑边、方直角、重阴影，顶部标签倾斜设计
+            css = `
+                #chatContainer ~ .input-wrapper .input-top-tag {
+                    background: var(--text-color) !important; color: var(--bg-color) !important;
+                    border: 3px solid var(--border-color) !important; border-bottom: none !important;
+                    border-radius: 0 !important; font-family: monospace !important; 
+                    transform: skewX(-10deg) !important; margin-left: 20px !important; margin-bottom: 0 !important;
+                    padding: 4px 15px !important; z-index: 2 !important; box-shadow: 4px 0 0 var(--border-color) !important;
+                }
+                #chatContainer ~ .input-wrapper { background: transparent !important; border: none !important; padding: 10px 15px 30px 15px !important; }
+                #chatContainer ~ .input-wrapper .input-area {
+                    background: var(--panel-bg) !important; border: 4px solid var(--border-color) !important;
+                    border-radius: 0 !important; box-shadow: 6px 6px 0 var(--border-color) !important;
+                    padding: 8px !important; display: flex !important; align-items: center !important; gap: 10px !important;
+                }
+                #chatContainer ~ .input-wrapper .tool-icon-btn {
+                    border: 3px solid var(--border-color) !important; border-radius: 0 !important; 
+                    background: var(--bg-color) !important; box-shadow: 2px 2px 0 var(--border-color) !important;
+                    width: 34px !important; height: 34px !important; transition: 0.1s !important;
+                }
+                #chatContainer ~ .input-wrapper .tool-icon-btn:active { transform: translate(2px,2px) !important; box-shadow: 0 0 0 !important; }
+                #chatContainer ~ .input-wrapper .input-box { border-left: 4px dashed var(--border-color) !important; padding-left: 12px !important; flex: 1 !important; border-bottom: none !important; border-top: none !important; border-right: none !important;}
+                #chatContainer ~ .input-wrapper .send-btn {
+                    border: 3px solid var(--border-color) !important; border-radius: 0 !important; 
+                    background: var(--text-color) !important; color: var(--bg-color) !important; 
+                    box-shadow: -3px 3px 0 var(--border-color) !important; font-family: monospace !important; 
+                    letter-spacing: 1px !important; padding: 8px 12px !important; margin: 0 !important; font-style: normal !important;
+                }
+                #chatContainer ~ .input-wrapper .send-btn:active { transform: translate(-2px,2px) !important; box-shadow: 0 0 0 !important; }
+            `;
+            break;
+            
+        case 'minimalist_line':
+            // 极简下划线：无框无阴影，仅留线条托底
+            css = `
+                #chatContainer ~ .input-wrapper .input-top-tag { display: none !important; }
+                #chatContainer ~ .input-wrapper { background: var(--bg-color) !important; border-top: 1px dashed var(--border-color) !important; padding: 15px 15px 25px 15px !important; box-shadow: none !important; }
+                #chatContainer ~ .input-wrapper .input-area { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; gap: 8px !important; align-items: flex-end !important; }
+                #chatContainer ~ .input-wrapper .tool-icon-btn { border: none !important; background: transparent !important; box-shadow: none !important; color: var(--text-color) !important; padding: 0 !important; width: 30px !important; height: 30px !important; margin-bottom: 2px !important;}
+                #chatContainer ~ .input-wrapper .tool-icon-btn:active { transform: scale(0.9) !important; opacity: 0.6 !important; }
+                #chatContainer ~ .input-wrapper .input-box { border: none !important; border-bottom: 3px solid var(--text-color) !important; border-radius: 0 !important; padding: 0 0 5px 0 !important; flex: 1 !important; }
+                #chatContainer ~ .input-wrapper .main-input { padding: 0 !important; font-size: 1.1em !important; }
+                #chatContainer ~ .input-wrapper .send-btn { background: transparent !important; border: none !important; box-shadow: none !important; color: var(--text-color) !important; font-style: italic !important; padding: 0 4px 6px 8px !important; border-bottom: 3px solid var(--text-color) !important; border-radius: 0 !important; margin: 0 !important; font-size: 1.1em !important;}
+                #chatContainer ~ .input-wrapper .send-btn:active { transform: translateX(4px) !important; opacity: 0.5 !important;}
+            `;
+            break;
+
+        case 'glassmorphism':
+            // 全透毛玻璃：磨砂透视，圆润无边，智能适配深浅色模式
+            css = `
+                #chatContainer ~ .input-wrapper .input-top-tag { display: none !important; }
+                #chatContainer ~ .input-wrapper { background: transparent !important; border: none !important; padding: 10px 15px 25px 15px !important; position: relative !important; z-index: 10 !important; }
+                /* 加一层向上的渐变遮罩融合背景 */
+                #chatContainer ~ .input-wrapper::before { content:''; position:absolute; bottom:0; left:0; right:0; height: 120px; background: linear-gradient(to top, var(--bg-color) 30%, transparent); pointer-events: none; z-index: -1; }
+                #chatContainer ~ .input-wrapper .input-area {
+                    background: rgba(255, 255, 255, 0.4) !important; backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important;
+                    border: 2px solid rgba(255, 255, 255, 0.5) !important; border-radius: 28px !important; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+                    padding: 8px 12px !important; gap: 8px !important; align-items: center !important;
+                }
+                /* 暗黑模式下的毛玻璃适配 */
+                [data-theme="dark"] #chatContainer ~ .input-wrapper .input-area { background: rgba(40, 40, 40, 0.5) !important; border-color: rgba(255, 255, 255, 0.1) !important; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important; }
+                
+                #chatContainer ~ .input-wrapper .tool-icon-btn { border: none !important; background: transparent !important; box-shadow: none !important; color: var(--text-color) !important; width: 30px !important; height: 30px !important; }
+                #chatContainer ~ .input-wrapper .input-box { border: none !important; background: rgba(255,255,255,0.3) !important; border-radius: 16px !important; padding: 6px 12px !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;}
+                [data-theme="dark"] #chatContainer ~ .input-wrapper .input-box { background: rgba(0,0,0,0.3) !important; }
+                #chatContainer ~ .input-wrapper .main-input { font-weight: normal !important; padding: 0 !important; }
+                
+                #chatContainer ~ .input-wrapper .send-btn { 
+                    border: none !important; border-radius: 50% !important; width: 38px !important; height: 38px !important; padding: 0 !important; 
+                    display: flex !important; justify-content: center !important; align-items: center !important; min-width: 38px !important; 
+                    background: var(--text-color) !important; color: var(--bg-color) !important; font-size: 0 !important; box-shadow: none !important; margin: 0 !important;
+                }
+                #chatContainer ~ .input-wrapper .send-btn::after { content: '↑'; font-style: normal; font-weight: 900; font-size: 18px; }
+            `;
+            break;
+
+        case 'side_dock':
+            // 【侧边悬浮坞】：画师最爱的侧边垂直操作盘，输入框浮于底部
+            css = `
+                #chatContainer ~ .input-wrapper .input-top-tag { display: none !important; }
+                
+                /* 工具栏排成竖列，固定在屏幕右侧悬浮 */
+                #chatContainer ~ .input-wrapper .tool-btns {
+                    position: fixed !important;
+                    bottom: 120px !important;
+                    right: 15px !important;
+                    flex-direction: column !important;
+                    gap: 12px !important;
+                    background: rgba(255,255,255,0.7) !important;
+                    backdrop-filter: blur(12px) !important;
+                    -webkit-backdrop-filter: blur(12px) !important;
+                    border: 3px solid var(--border-color) !important;
+                    border-radius: 20px !important;
+                    padding: 12px 8px !important;
+                    box-shadow: 4px 4px 0 var(--border-color), 0 10px 20px rgba(0,0,0,0.1) !important;
+                    z-index: 99 !important;
+                }
+                [data-theme="dark"] #chatContainer ~ .input-wrapper .tool-btns { background: rgba(0,0,0,0.6) !important; }
+                
+                /* 侧边按钮改圆角 */
+                #chatContainer ~ .input-wrapper .tool-icon-btn { border-radius: 50% !important; background: var(--bg-color) !important; }
+                
+                /* 底部输入框变更为极简无边框悬浮条 */
+                #chatContainer ~ .input-wrapper { background: transparent !important; border-top: none !important; padding: 10px 15px 25px 15px !important; pointer-events: none !important; }
+                #chatContainer ~ .input-wrapper .input-area { pointer-events: auto !important; background: var(--panel-bg) !important; border: 3px solid var(--border-color) !important; box-shadow: 0 6px 0 var(--border-color) !important; border-radius: 16px !important; padding-left: 12px !important;}
+                #chatContainer ~ .input-wrapper .input-box { border-left: none !important; }
+            `;
+            break;
+
+        default:
+            css = ''; // 恢复系统默认
+    }
+    
+    currentSettings.inputPresetCss = css;
+    await putToDB('settings', { key: 'config', value: currentSettings });
+    
+    const customInputStyle = document.getElementById('customInputCss');
+    if (customInputStyle) customInputStyle.innerHTML = css;
+    
+    // 强制把容器滑动到底部，防止更换底栏高度变化导致画面被遮挡
+    setTimeout(() => { if (typeof scrollToBottom === 'function') scrollToBottom(true); }, 50);
+
+    let t = document.createElement('div');
+    t.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--text-color); color:var(--bg-color); padding:15px 25px; border-radius:8px; font-weight:900; font-size:1.1em; z-index:999999; box-shadow: 4px 4px 0 var(--border-color); opacity:0; transition:opacity 0.2s;';
+    t.innerText = styleId === 'default' ? '已恢复默认底栏排版' : '底栏排版已应用';
+    document.body.appendChild(t);
+    setTimeout(() => t.style.opacity = '1', 10);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 1500);
+}
+                
     </script>
 </body>
 </html>

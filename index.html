@@ -360,6 +360,9 @@ if ('serviceWorker' in navigator) {
         .main-input {
             width: 100%; padding: 6px; border: none; background: transparent;
             color: var(--text-color); font-size: 1.05em; font-weight: 900; outline: none;
+            /* 👇只需加上这两行限制高度和换行，防止打字太多把屏幕挤爆 */
+            word-break: break-word; 
+            max-height: 120px; overflow-y: auto; 
         }
         .send-btn {
             background: var(--text-color); border: 3px solid var(--border-color); padding: 10px 18px; border-radius: 8px;
@@ -2315,9 +2318,9 @@ body.theme-glass #musicLyricBar {
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                 </button>
             </div>
-            <div class="input-box">
-                <input type="text" id="messageInput" class="main-input" placeholder="输入对话内容..." autocomplete="new-password" data-lpignore="true" readonly onfocus="this.removeAttribute('readonly');" onkeypress="handleKeyPress(event)">
-            </div>
+<div class="input-box">
+    <div id="messageInput" class="main-input" contenteditable="true" onkeypress="handleKeyPress(event)"></div>
+</div>
             <button class="send-btn" onclick="sendMessage()">SEND</button>
         </div>
     </div>
@@ -5537,10 +5540,15 @@ await putToDB('messages', msg);
     triggerYumeReply();
 }
 
-function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
+function handleKeyPress(e) { 
+    if (e.key === 'Enter' && !e.shiftKey) { 
+        e.preventDefault(); // 阻止回车自动换行
+        sendMessage(); 
+    } 
+}
+async function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const text = input.innerText.trim(); // 从 value 改成 innerText获取文本
             
             // 如果没打字（输入框为空）就点击了发送键：
             if (!text) {
@@ -5553,7 +5561,7 @@ function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
 const qData = currentQuoteData; clearQuote();
 await saveAndRenderMsg('user', text, null, Date.now(), true, null, qData);
-input.value = ''; 
+input.innerText = ''; 
             if (!isBatchMode) simulateReadAndReply(); // 连发模式下不触发对方回复
         }
 

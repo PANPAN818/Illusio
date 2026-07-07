@@ -1044,6 +1044,70 @@ body.theme-wechat .form-group input[type="range"]::-webkit-slider-thumb {
 .checkin-progress-text { font-size: 0.85em; font-weight: 900; opacity: 0.8; text-align: right; font-style: italic; }
 .checkin-actions { display: flex; gap: 10px; margin-top: 15px; }
 
+/* --- 红包专属样式 (精美小巧柔和版) --- */
+.red-packet-card {
+    background: #ff6b6b; /* 更柔和的珊瑚粉红 */
+    border: 2px solid var(--border-color); /* 边框变细 */
+    border-radius: 10px;
+    width: 200px; /* 宽度变小，更精巧 */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 3px 3px 0 var(--border-color);
+    user-select: none;
+    transition: transform 0.1s;
+}
+.red-packet-card:active { transform: scale(0.98); }
+[data-theme="dark"] .red-packet-card { background: #d9534f; } /* 暗黑模式压暗 */
+
+.rp-top {
+    padding: 12px 14px; /* 内边距缩小 */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.rp-icon {
+    width: 32px; /* 图标缩小 */
+    height: 32px;
+    background: #ffebd6; /* 柔和的奶油色 */
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 900;
+    color: #ff6b6b;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+.rp-content {
+    color: #ffebd6;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.rp-title {
+    font-size: 1em; /* 标题变小 */
+    font-weight: 900;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+}
+.rp-desc {
+    font-size: 0.75em;
+    opacity: 0.9;
+    font-weight: bold;
+}
+.rp-bottom {
+    background: var(--panel-bg);
+    padding: 6px 14px;
+    font-size: 0.7em;
+    color: var(--text-color);
+    font-weight: 900;
+    opacity: 0.6;
+}
+
 /* 聊天界面内的分享卡片 CSS */
 .checkin-chat-card { width: 100%; min-width: 220px; background: var(--bg-color); border: 3px dashed var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
 
@@ -1165,16 +1229,16 @@ body.theme-wechat .form-group input[type="range"]::-webkit-slider-thumb {
     color: #ff4444;
 }
 
-/* ====== 新增：左下角抽屉侧边栏 (小巧精致版) ====== */
+/* ====== 新增：左下角抽屉侧边栏 (完美隐藏黑边版) ====== */
 .side-toolbar {
     position: fixed;
     left: 0;
-    bottom: 135px; /* 稍微往上抬一点 */
+    bottom: 135px;
     display: flex;
     align-items: center;
     z-index: 95;
-    /* 露出的拉环宽度缩小到 16px */
-    transform: translateX(calc(-100% + 16px)); 
+    /* 关键修复：向左平移 100% 再多移 3px，彻底把黑边和阴影藏进屏幕外 */
+    transform: translateX(calc(-100% - 3px));
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .side-toolbar.open {
@@ -1183,18 +1247,20 @@ body.theme-wechat .form-group input[type="range"]::-webkit-slider-thumb {
 
 .side-toolbar-content {
     background: var(--panel-bg);
-    border: 2.5px solid var(--border-color); /* 边框变细 */
+    border: 2.5px solid var(--border-color);
     border-left: none;
     border-radius: 0 10px 10px 0;
-    padding: 6px; /* 内边距缩小 */
+    padding: 6px;
     display: flex;
     flex-direction: column;
-    gap: 8px; /* 按钮间距缩小 */
+    gap: 8px;
     box-shadow: 3px 3px 0 var(--border-color);
+    position: relative; /* 确立层级 */
+    z-index: 1;
 }
 
 .side-toolbar-btn {
-    width: 32px; /* 按钮整体变小 */
+    width: 32px;
     height: 32px;
     background: var(--bg-color);
     border: 2.5px solid var(--border-color);
@@ -1213,9 +1279,12 @@ body.theme-wechat .form-group input[type="range"]::-webkit-slider-thumb {
 }
 .side-toolbar-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
-/* 侧边栏的拉拽小把手也缩小 */
+/* 侧边栏的拉拽小把手 */
 .side-toolbar-handle {
-    width: 16px; /* 更窄更秀气 */
+    /* 关键修复：绝对定位，悬浮在容器右侧外面，不影响隐藏计算 */
+    position: absolute;
+    left: calc(100% - 2.5px); /* 无缝贴合右边框 */
+    width: 16px;
     height: 36px;
     background: var(--text-color);
     color: var(--bg-color);
@@ -1227,7 +1296,6 @@ body.theme-wechat .form-group input[type="range"]::-webkit-slider-thumb {
     align-items: center;
     cursor: pointer;
     box-shadow: 2px 2px 0 var(--border-color);
-    margin-left: -2px; 
     z-index: 2;
 }
 .side-toolbar-handle svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.3s;}
@@ -1444,6 +1512,7 @@ body.theme-pink .modal-content {
         .music-pill-box {
             display: flex; align-items: center; justify-content: space-between;
             background: var(--panel-bg); border: 3px solid var(--border-color);
+            pointer-events: auto; /* 开启悬浮点击穿透 */
             border-radius: 30px; padding: 4px 6px 4px 12px; box-shadow: 3px 3px 0 var(--border-color);
             height: 44px;
         }
@@ -1467,6 +1536,7 @@ body.theme-pink .modal-content {
         .music-pill-ctrl .icon-btn svg, .music-card-ctrl .icon-btn svg { width: 14px; height: 14px; fill: currentColor; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
         .music-card-box {
+            pointer-events: auto; /* 👈 就是加了这一句 */
             display: flex; align-items: center; gap: 12px;
             background: var(--panel-bg); border: 3px solid var(--border-color);
             border-radius: 12px; padding: 10px; box-shadow: 4px 4px 0 var(--border-color);
@@ -1485,6 +1555,7 @@ body.theme-pink .modal-content {
         .music-card-ctrl { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
 
         .music-list-panel {
+            pointer-events: auto; /* 👈 还有这一句 */
             background: var(--panel-bg); border: 3px solid var(--border-color); border-top: none;
             border-radius: 0 0 12px 12px; box-shadow: 4px 4px 0 var(--border-color);
             margin: 0 10px; display: flex; flex-direction: column; max-height: 200px;
@@ -1501,7 +1572,136 @@ body.theme-pink .modal-content {
             display: flex; justify-content: space-between; align-items: center; white-space: nowrap;
         }
         .m-l-item:hover, .m-l-item.playing { background: var(--text-color); color: var(--bg-color); }
-        
+   
+        /* ================= 微信主题：红包专属 1:1 样式 ================= */
+body.theme-wechat .red-packet-card {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 4px !important;
+    width: 225px !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+}
+body.theme-wechat .rp-top {
+    background: #f2753f !important; /* 微信经典橘红 */
+    padding: 12px 15px !important;
+    gap: 12px !important;
+}
+body.theme-wechat .rp-icon {
+    background-color: #fbd672 !important; /* 微信的黄色小钱币底色 */
+    color: #f2753f !important;
+    box-shadow: none !important;
+    font-size: 20px !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 4px !important;
+}
+body.theme-wechat .rp-content { color: #ffffff !important; }
+body.theme-wechat .rp-title { font-weight: normal !important; font-size: 15px !important; }
+body.theme-wechat .rp-desc { font-weight: normal !important; opacity: 0.8 !important; font-size: 12px !important; }
+body.theme-wechat .rp-bottom {
+    background: #ffffff !important;
+    color: #999999 !important;
+    padding: 4px 15px !important;
+    font-size: 0 !important; /* 隐藏原本的红包字样 */
+}
+body.theme-wechat .rp-bottom::before {
+    content: "微信红包"; /* 伪装成微信底栏字样 */
+    font-size: 11px !important;
+    font-weight: normal !important;
+}
+/* 微信暗黑模式下的红包压暗适配 */
+[data-theme="dark"] body.theme-wechat .rp-top { background: #cf5e33 !important; }
+[data-theme="dark"] body.theme-wechat .rp-icon { background-color: #d1b15c !important; color: #cf5e33 !important; }
+[data-theme="dark"] body.theme-wechat .rp-bottom { background: #2c2c2c !important; color: #777777 !important; }
+
+/* ================= 苹果 iMessage 主题：Apple Pay 高级样式 ================= */
+body.theme-imessage .red-packet-card {
+    background: #000000 !important; /* Apple Pay Cash 的纯黑质感 */
+    border: none !important;
+    border-radius: 18px !important; /* iOS 圆润风格 */
+    width: 220px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+body.theme-imessage .rp-top {
+    padding: 16px 16px 12px 16px !important;
+    gap: 12px !important;
+}
+body.theme-imessage .rp-icon {
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border-radius: 50% !important; /* iOS 喜欢正圆形 */
+}
+body.theme-imessage .rp-content { color: #ffffff !important; }
+body.theme-imessage .rp-title { font-weight: 500 !important; font-size: 15px !important; }
+body.theme-imessage .rp-desc { font-weight: 400 !important; font-size: 12px !important; opacity: 0.8 !important;}
+body.theme-imessage .rp-bottom {
+    background: transparent !important;
+    color: #ffffff !important;
+    padding: 0 16px 16px 16px !important;
+    font-size: 0 !important; 
+}
+body.theme-imessage .rp-bottom::before {
+    content: " Pay"; /* 伪装成苹果支付的标志 */
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+/* 苹果暗黑模式下的颜色微调 */
+[data-theme="dark"] body.theme-imessage .red-packet-card { background: #1c1c1e !important; }
+     
+     /* ================= Aero Glass 全透毛玻璃主题 ================= */
+body.theme-glass {
+    --bg-color: #f0f4f8 !important;
+    /* 默认带一个高级紫蓝渐变，如果用户上传了壁纸，壁纸会覆盖它并透出来 */
+    --bg-pattern: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%) !important;
+    --panel-bg: rgba(255, 255, 255, 0.4) !important;
+    --bubble-bg: rgba(255, 255, 255, 0.55) !important;
+    --border-color: rgba(255, 255, 255, 0.6) !important;
+    --text-color: #334155 !important;
+}
+[data-theme="dark"] body.theme-glass {
+    --bg-color: #0f172a !important;
+    --bg-pattern: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    --panel-bg: rgba(30, 41, 59, 0.5) !important;
+    --bubble-bg: rgba(51, 65, 85, 0.5) !important;
+    --border-color: rgba(255, 255, 255, 0.15) !important;
+    --text-color: #e2e8f0 !important;
+}
+
+/* 核心：高斯模糊全覆盖 */
+body.theme-glass .bubble,
+body.theme-glass .header-center-box,
+body.theme-glass .top-btn,
+body.theme-glass .avatar,
+body.theme-glass .avatar-container,
+body.theme-glass .app-icon,
+body.theme-glass .checkin-item,
+body.theme-glass .action-btn,
+body.theme-glass .outline-btn,
+body.theme-glass .red-packet-card,
+body.theme-glass .modal-content,
+body.theme-glass .side-toolbar-content,
+body.theme-glass .input-area {
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
+    border-width: 1.5px !important; /* 让边框变细，更精致 */
+}
+[data-theme="dark"] body.theme-glass * {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 细节修饰：气泡变圆润，去掉小尾巴 */
+body.theme-glass .bubble { border-radius: 18px !important; }
+body.theme-glass .yume .bubble::before, body.theme-glass .yume .bubble::after,
+body.theme-glass .user .bubble::before, body.theme-glass .user .bubble::after {
+    display: none !important; 
+}
+body.theme-glass .avatar, body.theme-glass .avatar-container {
+    border-radius: 50% !important; /* 头像强制变正圆 */
+}
+
     </style>
 </head>
 <body>
@@ -1536,6 +1736,12 @@ body.theme-pink .modal-content {
         <button class="side-toolbar-btn" onclick="openMusicModal()" title="网易云音乐">
             <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
         </button>
+        
+        <!-- 发红包按钮 -->
+        <button class="side-toolbar-btn" onclick="openRedPacketModal()" title="发红包">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect><circle cx="12" cy="12" r="3"></circle><line x1="12" y1="2" x2="12" y2="4"></line></svg>
+        </button>
+        
     </div>
     <!-- 展开/收起把手 -->
     <div class="side-toolbar-handle" onclick="toggleSideToolbar()">
@@ -1632,12 +1838,12 @@ body.theme-pink .modal-content {
 
     <!-- 音乐播放器实体组件 (紧贴在 header 下面) -->
     <audio id="bgMusicAudio" style="display:none;" onended="playNextMusic()"></audio>
-    <div id="topMusicPlayerBox" style="display:none; padding: 0 12px 10px 12px; z-index: 9; position: relative;">
+    <div id="topMusicPlayerBox" style="display:none; padding: 0 12px 10px 12px; z-index: 98; position: absolute; top: 60px; left: 0; right: 0; pointer-events: none;">
         
         <!-- 1. 小胶囊形态 -->
         <div id="musicPillMode" class="music-pill-box">
             <div class="music-pill-info" onclick="toggleMusicMode()">
-                <div class="music-note-icon">🎵</div>
+                <div class="music-note-icon"></div>
                 <div class="music-scroll-title" id="pillMusicTitle">暂无音乐播放...</div>
             </div>
             <div class="music-pill-ctrl">
@@ -2665,6 +2871,26 @@ body.theme-pink .modal-content {
     <button class="outline-btn" style="margin: 0; padding: 10px; color: #ff7597; border-color: #ffb3c6;" onclick="applyThemeStyle('pink')">一键套用</button>
 </div>
 
+<!-- Aero Glass 磨砂玻璃主题 -->
+<div style="background: var(--panel-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 15px; box-shadow: 4px 4px 0 var(--border-color); display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+    <div style="font-weight: 900; font-size: 1.1em; display:flex; justify-content:space-between; align-items:center;">
+        <span>Aero Glass 磨砂玻璃</span>
+        <span style="font-size: 0.7em; background: linear-gradient(135deg, #a1c4fd, #c2e9fb); color: #333; padding: 2px 6px; border-radius: 4px; font-style: italic; border: 1px solid rgba(255,255,255,0.8);">PRO</span>
+    </div>
+    <div style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); border-radius: 6px; height: 160px; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+        <div style="display:flex; gap:8px;">
+            <div style="width:28px;height:28px;border:1.5px solid rgba(255,255,255,0.6);border-radius:50%;background:rgba(255,255,255,0.3); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);"></div>
+            <div style="background:rgba(255,255,255,0.4);color:#333;border:1.5px solid rgba(255,255,255,0.6);border-radius:12px;padding:6px 10px;font-weight:900;backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">很通透的高级感~</div>
+        </div>
+        <div style="display:flex; gap:8px; align-self:flex-end; flex-direction:row-reverse;">
+            <div style="width:28px;height:28px;border:1.5px solid rgba(255,255,255,0.6);border-radius:50%;background:rgba(255,255,255,0.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);"></div>
+            <div style="background:rgba(255,255,255,0.6);color:#333;border:1.5px solid rgba(255,255,255,0.8);border-radius:12px;padding:6px 10px;font-weight:900;backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">质感拉满！</div>
+        </div>
+        <div style="margin-top:auto; background:rgba(255,255,255,0.3); border:1.5px solid rgba(255,255,255,0.6); border-radius:30px; height:24px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);"></div>
+    </div>
+    <button class="outline-btn" style="margin: 0; padding: 10px; color: #4a6fa5; border-color: rgba(74, 111, 165, 0.4);" onclick="applyThemeStyle('glass')">一键套用</button>
+</div>
+
         </div>
 
         <!-- 聊天气泡区 -->
@@ -2992,6 +3218,41 @@ body.theme-pink .modal-content {
         <div style="display:flex; gap:12px; margin-top:10px;">
             <button class="outline-btn" style="flex:1; margin:0;" onclick="document.getElementById('addSavingRecordModal').style.display='none'">取消</button>
             <button class="action-btn" style="flex:1; margin:0; border-radius:4px;" onclick="confirmAddSaving()">存入</button>
+        </div>
+    </div>
+</div>
+
+<!-- 红包系统模态框 (小巧柔和 + 附言版) -->
+<div class="modal" id="redPacketModal" style="z-index: 99999;">
+    <div class="modal-content" style="max-width: 320px; padding: 25px 20px; gap: 15px; border-radius: 16px; background: var(--bg-color);">
+        <div style="text-align:center; font-weight:900; font-size:1.2em; color: var(--text-color); font-style: italic;">🧧 RED PACKET</div>
+        
+        <!-- 小金库展示卡片 -->
+        <div style="background: #ff6b6b; color: #ffebd6; padding: 20px 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(255,107,107,0.3); position: relative; overflow: hidden; border: 2px solid var(--border-color);">
+            <div style="font-size: 0.85em; font-weight: 900; opacity: 0.9; position: relative; z-index: 2;">TA 的小金库余额</div>
+            <div style="font-size: 2.2em; font-weight: 900; margin-top: 5px; position: relative; z-index: 2; text-shadow: 1px 1px 0 rgba(0,0,0,0.1);">¥ <span id="rpAiBalanceVal">0.00</span></div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top: -5px;">
+            <button class="outline-btn" style="flex:1; margin:0; border-radius: 10px; font-size: 0.85em; padding: 6px; background: var(--panel-bg);" onclick="resetAiBalance()">清空余额</button>
+            <button class="outline-btn" style="flex:1; margin:0; border-radius: 10px; font-size: 0.85em; padding: 6px; background: var(--panel-bg);" onclick="setAiBalance()">改金额</button>
+        </div>
+
+        <div style="background: var(--panel-bg); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 12px; box-shadow: 2px 2px 0 var(--border-color);">
+            <div style="display:flex; align-items: center; justify-content: space-between;">
+                <label style="font-weight:900; font-size:0.9em; color: var(--text-color);">塞钱进红包</label>
+                <input type="number" id="rpSendAmount" placeholder="0.00" step="0.01" style="width:100px; padding:6px; border:none; border-bottom: 2px solid var(--border-color); background:transparent; color:var(--text-color); font-weight:900; font-size:1.1em; outline:none; text-align: right;">
+            </div>
+            
+            <div style="display:flex; align-items: center; justify-content: space-between;">
+                <label style="font-weight:900; font-size:0.9em; color: var(--text-color);">附言</label>
+                <input type="text" id="rpSendMessage" placeholder="恭喜发财，大吉大利" style="width: 140px; padding:6px; border:none; border-bottom: 2px dashed var(--border-color); background:transparent; color:var(--text-color); font-weight:900; font-size:0.9em; outline:none; text-align: right;">
+            </div>
+        </div>
+        
+        <div style="display:flex; gap:12px; margin-top:10px;">
+            <button class="outline-btn" style="flex:1; margin:0; border-radius: 12px; padding: 12px; background: var(--panel-bg);" onclick="document.getElementById('redPacketModal').style.display='none'">取消</button>
+            <button class="action-btn" style="flex:1; margin:0; border-radius: 12px; background: #ff6b6b; color: #fff; padding: 12px; font-size: 1.1em; border: 2px solid var(--border-color); box-shadow: 2px 2px 0 var(--border-color);" onclick="sendRedPacketToAi()">塞钱发送</button>
         </div>
     </div>
 </div>
@@ -3702,17 +3963,19 @@ document.documentElement.style.setProperty('--bg-pattern', currentSettings.showD
             // 自动加载预设的底栏输入框样式
             const customInputStyle = document.getElementById('customInputCss');
             if (customInputStyle) customInputStyle.innerHTML = currentSettings.inputPresetCss || '';
-    document.body.classList.remove('theme-wechat', 'theme-imessage', 'theme-pink');
+    document.body.classList.remove('theme-wechat', 'theme-imessage', 'theme-pink', 'theme-glass');
     if (currentSettings.themeStyle === 'wechat') {
         document.body.classList.add('theme-wechat');
     } else if (currentSettings.themeStyle === 'imessage') {
         document.body.classList.add('theme-imessage');
     } else if (currentSettings.themeStyle === 'pink') {
         document.body.classList.add('theme-pink');
-    }
+        } else if (currentSettings.themeStyle === 'glass') {
+            document.body.classList.add('theme-glass');
         }
-
-        async function loadSettings() {
+    }
+        
+    async function loadSettings() {
             const data = await getFromDB('settings', 'config');
             if (data) currentSettings = { ...currentSettings, ...data.value };
             if (!currentSettings.dataId) currentSettings.dataId = generateUUID();
@@ -4673,7 +4936,7 @@ if (extraMsgData && extraMsgData.quote) {
 }
 
 let bubbleHtml = ""; let imgLoadAttr = isNew ? 'onload="window.scrollToBottom && scrollToBottom(false)"' : '';
-let isSpecialCard = text && text.includes('class="checkin-chat-card"');
+let isSpecialCard = text && (text.includes('class="checkin-chat-card"') || text.includes('class="red-packet-card"'));
 let bClass = isSpecialCard ? '' : 'bubble';
 
 if (text && imgUrl) { 
@@ -4985,6 +5248,8 @@ if (customPokeList.length > 0 && Math.random() < 0.03) {
     await saveAndRenderMsg('system', `${cName} ${randomPoke}`, null, Date.now(), true);
     await delay(500); // 稍微停顿一下更有真实感
 }
+
+
 
 // 真正发出消息
 if (hasStickers) {
@@ -7311,6 +7576,137 @@ setTimeout(() => {
     checkUnreadLetters(); 
 }, 2000);
 
+/* ================= 完美红包系统逻辑 ================= */
+function openRedPacketModal() {
+    document.getElementById('sideToolbar').classList.remove('open');
+    if (!currentSettings.aiRedPacketBalance) currentSettings.aiRedPacketBalance = 0;
+    document.getElementById('rpAiBalanceVal').innerText = parseFloat(currentSettings.aiRedPacketBalance).toFixed(2);
+    document.getElementById('rpSendAmount').value = '';
+    document.getElementById('rpSendMessage').value = ''; 
+    document.getElementById('redPacketModal').style.display = 'flex';
+}
+
+async function setAiBalance() {
+    const amount = prompt("请输入你想直接设置的TA的小金库余额：", currentSettings.aiRedPacketBalance || 0);
+    if (amount !== null && !isNaN(parseFloat(amount)) && parseFloat(amount) >= 0) {
+        currentSettings.aiRedPacketBalance = parseFloat(amount);
+        await putToDB('settings', { key: 'config', value: currentSettings });
+        document.getElementById('rpAiBalanceVal').innerText = currentSettings.aiRedPacketBalance.toFixed(2);
+    } else if (amount !== null) {
+        alert("请输入正确的数字哦！");
+    }
+}
+
+async function resetAiBalance() {
+    if (confirm("确定要清空TA的余额吗？")) {
+        currentSettings.aiRedPacketBalance = 0;
+        await putToDB('settings', { key: 'config', value: currentSettings });
+        document.getElementById('rpAiBalanceVal').innerText = "0.00";
+    }
+}
+
+function generateRedPacketHtml(amount, title = "大吉大利，万事如意") {
+    // 如果是空包，显示特殊文案
+    let displayDesc = amount > 0 ? `金额：${parseFloat(amount).toFixed(2)} 元` : `金额：0.00 元 (空包)`;
+    return `
+        <div class="red-packet-card">
+            <div class="rp-top">
+                <div class="rp-icon">¥</div>
+                <div class="rp-content">
+                    <div class="rp-title">${title}</div>
+                    <div class="rp-desc">${displayDesc}</div>
+                </div>
+            </div>
+            <div class="rp-bottom">红包</div>
+        </div>
+    `;
+}
+
+async function sendRedPacketToAi() {
+    const amountInput = document.getElementById('rpSendAmount').value;
+    const amount = parseFloat(amountInput);
+    const memoInput = document.getElementById('rpSendMessage').value.trim();
+    const finalMemo = memoInput ? memoInput : "恭喜发财，大吉大利"; 
+    
+    if (!amount || amount <= 0) {
+        showCustomConfirm("请输入正确的红包金额！", () => {});
+        return;
+    }
+    
+    if (!currentSettings.aiRedPacketBalance) currentSettings.aiRedPacketBalance = 0;
+    currentSettings.aiRedPacketBalance += amount;
+    await putToDB('settings', { key: 'config', value: currentSettings });
+    
+    document.getElementById('redPacketModal').style.display = 'none';
+    
+    const htmlStr = generateRedPacketHtml(amount, finalMemo);
+    const qData = currentQuoteData; clearQuote();
+    await saveAndRenderMsg('user', htmlStr, null, Date.now(), true, null, qData);
+    
+    setTimeout(() => { if (typeof scrollToBottom === 'function') scrollToBottom(true); }, 50);
+    
+    if (!isBatchMode) simulateReadAndReply();
+}
+
+// 拦截原生消息引擎：注入 AI 的 3% 发红包概率
+const originalTriggerYumeReplyRP = triggerYumeReply;
+triggerYumeReply = async function() {
+    // 先让 TA 走正常的回复流程（发字卡/表情）
+    await originalTriggerYumeReplyRP();
+    
+    // 回复完之后，3% 的概率额外给你弹一个红包！
+    if (Math.random() < 0.03) {
+        await delay(1000); // 停顿一秒钟，像是它发完消息突然想起来给你发红包
+        
+        let sendAmount = 0;
+        let rpTitle = "大吉大利，万事如意"; // 默认 70% 的概率是这个文案
+        
+        // 1. 判断余额
+        if (currentSettings.aiRedPacketBalance && currentSettings.aiRedPacketBalance > 0) {
+            let maxAmount = parseFloat(currentSettings.aiRedPacketBalance);
+            sendAmount = parseFloat((Math.random() * maxAmount).toFixed(2));
+            if (sendAmount <= 0) sendAmount = 0.01;
+            if (sendAmount > maxAmount) sendAmount = maxAmount;
+            
+            // 扣钱
+            currentSettings.aiRedPacketBalance = parseFloat((currentSettings.aiRedPacketBalance - sendAmount).toFixed(2));
+            await putToDB('settings', { key: 'config', value: currentSettings });
+        } else {
+            // 余额不足，变成空包 0.00
+            sendAmount = 0;
+        }
+        
+        // 2. 判断文案 (30%概率从字卡里抽)
+        if (Math.random() < 0.30) {
+            const allWords = await getAllFromDB('wordCards');
+            let validWords = allWords;
+            if (currentSettings.activeReplyGroups && currentSettings.activeReplyGroups.length > 0) {
+                validWords = allWords.filter(w => currentSettings.activeReplyGroups.includes(w.category || '日常'));
+            }
+            if (validWords.length > 0) {
+                rpTitle = validWords[Math.floor(Math.random() * validWords.length)].text;
+            }
+        }
+        
+        // 3. 渲染发送
+        const rpHtml = generateRedPacketHtml(sendAmount, rpTitle);
+        // 为了防止找不到 replier，我们直接用当前主视角的角色
+        let activeChar = charactersList.find(c => c.id === currentChatId) || charactersList[0];
+        
+        // 重新挂起输入动画
+        const typingIndicator = document.getElementById('typingIndicator');
+        document.getElementById('chatContainer').appendChild(typingIndicator);
+        typingIndicator.style.display = 'flex';
+        setTimeout(() => { if (typeof scrollToBottom === 'function') scrollToBottom(false); }, 50);
+        
+        await delay(800); // 假装在包红包
+        await saveAndRenderMsg('yume', rpHtml, null, Date.now(), true, activeChar);
+        
+        typingIndicator.style.display = 'none';
+        document.body.appendChild(typingIndicator);
+    }
+};
+
 /* ================= 桌宠宝宝系统核心 ================= */
 let petState = 'IDLE'; // IDLE, WALK, DRAG
 let petAnimFrame = null;
@@ -8430,6 +8826,7 @@ window.applyThemeStyle = async function(styleId) {
     if (styleId === 'wechat') t.innerText = '已套用微信主题';
     else if (styleId === 'imessage') t.innerText = '已套用苹果主题';
     else if (styleId === 'pink') t.innerText = '已套用粉色少女主题';
+    else if (styleId === 'glass') t.innerText = '已套用全透毛玻璃主题';
     else t.innerText = '已恢复默认主题';
     document.body.appendChild(t);
     setTimeout(() => t.style.opacity = '1', 10);
@@ -8511,7 +8908,12 @@ function renderHeaderLayout() {
         
         headerCenter.style.cssText = 'position:relative; display:block; flex:1; background:transparent; border:none; box-shadow:none; padding:0; transform:none; margin:0 8px; height:36px; overflow:visible !important; z-index:99;';
         headerCenter.innerHTML = `
-            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); display:flex; justify-content:center; align-items:center; width:100%; height:0; overflow:visible;">
+            <style>
+                .header { position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 100 !important; background: transparent !important; pointer-events: none !important; border: none !important; }
+                .header-actions, #themeToggleBtn { pointer-events: auto !important; }
+                #chatContainer { padding-top: 100px !important; }
+            </style>
+            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); display:flex; justify-content:center; align-items:center; width:100%; height:0; overflow:visible; pointer-events: auto;">
                 <div style="position:relative; display:flex; z-index:2; align-items:center;">
                     <div style="width:56px; height:56px; border-radius:50%; border:3px solid var(--border-color); background-color:var(--bg-color); ${cAvatar} background-size:cover; background-position:center; display:flex; justify-content:center; align-items:center; font-size:18px; font-weight:900; z-index:2; box-shadow:2px 2px 0 var(--border-color);">${cChar}</div>
                     <div style="width:46px; height:46px; border-radius:50%; border:3px solid var(--border-color); background-color:var(--bg-color); ${uAvatar} background-size:cover; background-position:center; display:flex; justify-content:center; align-items:center; font-size:14px; font-weight:900; margin-left:-18px; z-index:1; box-shadow:2px 2px 0 var(--border-color);">${uChar}</div>
@@ -8540,20 +8942,40 @@ function renderHeaderLayout() {
                 /* 彻底隐藏外面乱跑的原生按钮 */
                 .header-actions, #themeToggleBtn { display: none !important; }
                 
-                .header { padding: 12px 15px !important; display: block !important; height: auto !important; }
+                /* 👇 1. 让顶栏变成真正的“绝对悬浮”，脱离文档流，不切断底下的聊天区 */
+                .header { 
+                    position: absolute !important; 
+                    top: 0 !important; left: 0 !important; right: 0 !important;
+                    padding: 12px 15px !important; 
+                    display: block !important; 
+                    height: auto !important; 
+                    z-index: 100 !important;
+                    background: transparent !important;
+                    pointer-events: none !important; /* 🌟关键：让周围的透明区域允许手指滑动穿透 */
+                }
+
+                /* 👇 2. 动态调节聊天区和音乐盒的起跑线，防止开局第一条消息被悬浮舱盖住 */
+                #topMusicPlayerBox {
+                    padding-top: 170px !important; 
+                }
+                #topMusicPlayerBox[style*="none"] ~ #chatContainer {
+                    padding-top: 170px !important; 
+                }
                 
+                /* 👇 3. 恢复悬浮大框框本身的实体点击，确保上面的按钮还能按 */
                 .header-center-box {
+                    pointer-events: auto !important; 
                     width: 100% !important;
                     max-width: 100% !important;
                     margin: 0 !important;
-                    padding: 18px 10px !important; /* 🌟左右内边距缩小，让头像被推得更远 */
+                    padding: 18px 10px !important; 
                     background: var(--panel-bg) !important;
                     border: 4px solid var(--border-color) !important;
                     border-radius: 24px !important;
                     box-shadow: 6px 6px 0 var(--border-color) !important;
                     display: flex !important;
                     flex-direction: column !important;
-                    gap: 15px !important; /* 上下间距微调 */
+                    gap: 15px !important; 
                     transform: none !important;
                 }
 
@@ -8779,9 +9201,10 @@ window.applyInputStyle = async function(styleId) {
     switch(styleId) {
         case 'floating_pill':
             css = `
+                #chatContainer { padding-bottom: 90px !important; }
                 #chatContainer ~ .input-wrapper .input-top-tag { display: none !important; }
-                #chatContainer ~ .input-wrapper { padding: 10px 15px 20px 15px !important; background: transparent !important; border-top: none !important; }
-                #chatContainer ~ .input-wrapper .input-area { background: var(--panel-bg) !important; border: 3px solid var(--border-color) !important; border-radius: 30px !important; padding: 6px 8px 6px 12px !important; box-shadow: 0 8px 20px rgba(0,0,0,0.1), 0 4px 0 var(--border-color) !important; display: flex !important; align-items: center !important; gap: 8px !important; width: 100% !important; }
+                #chatContainer ~ .input-wrapper { position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; pointer-events: none !important; z-index: 100 !important; padding: 10px 15px 20px 15px !important; background: transparent !important; border-top: none !important; }
+                #chatContainer ~ .input-wrapper .input-area { pointer-events: auto !important; background: var(--panel-bg) !important; border: 3px solid var(--border-color) !important; border-radius: 30px !important; padding: 6px 8px 6px 12px !important; box-shadow: 0 8px 20px rgba(0,0,0,0.1), 0 4px 0 var(--border-color) !important; display: flex !important; align-items: center !important; gap: 8px !important; width: 100% !important; }
                 #chatContainer ~ .input-wrapper .tool-btns { display: flex !important; gap: 4px !important; padding-left: 0 !important; }
                 #chatContainer ~ .input-wrapper .tool-icon-btn { border: none !important; background: transparent !important; box-shadow: none !important; width: 32px !important; height: 32px !important; padding: 4px !important; color: var(--text-color) !important; border-radius: 50% !important; }
                 #chatContainer ~ .input-wrapper .input-box { flex: 1 !important; border: none !important; padding: 0 4px !important; }
@@ -8842,11 +9265,13 @@ window.applyInputStyle = async function(styleId) {
         case 'glassmorphism':
             // 全透毛玻璃：磨砂透视，圆润无边，智能适配深浅色模式
             css = `
+                #chatContainer { padding-bottom: 100px !important; }
                 #chatContainer ~ .input-wrapper .input-top-tag { display: none !important; }
-                #chatContainer ~ .input-wrapper { background: transparent !important; border: none !important; padding: 10px 15px 25px 15px !important; position: relative !important; z-index: 10 !important; }
+                #chatContainer ~ .input-wrapper { position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; pointer-events: none !important; background: transparent !important; border: none !important; padding: 10px 15px 25px 15px !important; z-index: 10 !important; }
                 /* 加一层向上的渐变遮罩融合背景 */
                 #chatContainer ~ .input-wrapper::before { content:''; position:absolute; bottom:0; left:0; right:0; height: 120px; background: linear-gradient(to top, var(--bg-color) 30%, transparent); pointer-events: none; z-index: -1; }
                 #chatContainer ~ .input-wrapper .input-area {
+                    pointer-events: auto !important;
                     background: rgba(255, 255, 255, 0.4) !important; backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important;
                     border: 2px solid rgba(255, 255, 255, 0.5) !important; border-radius: 28px !important; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
                     padding: 8px 12px !important; gap: 8px !important; align-items: center !important;
@@ -8894,8 +9319,9 @@ window.applyInputStyle = async function(styleId) {
                 /* 侧边按钮改圆角 */
                 #chatContainer ~ .input-wrapper .tool-icon-btn { border-radius: 50% !important; background: var(--bg-color) !important; }
                 
+                #chatContainer { padding-bottom: 90px !important; }
                 /* 底部输入框变更为极简无边框悬浮条 */
-                #chatContainer ~ .input-wrapper { background: transparent !important; border-top: none !important; padding: 10px 15px 25px 15px !important; pointer-events: none !important; }
+                #chatContainer ~ .input-wrapper { position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 100 !important; background: transparent !important; border-top: none !important; padding: 10px 15px 25px 15px !important; pointer-events: none !important; }
                 #chatContainer ~ .input-wrapper .input-area { pointer-events: auto !important; background: var(--panel-bg) !important; border: 3px solid var(--border-color) !important; box-shadow: 0 6px 0 var(--border-color) !important; border-radius: 16px !important; padding-left: 12px !important;}
                 #chatContainer ~ .input-wrapper .input-box { border-left: none !important; }
             `;

@@ -27,8 +27,7 @@ if ('serviceWorker' in navigator) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Illusion Chat</title>
     
-    
-    <!-- 动态注入的自定义样式 -->
+        <!-- 动态注入的自定义样式 -->
     <style id="customFontCss"></style>
     <style id="customThemeCss"></style>
     <style id="customBubbleCss"></style>
@@ -36,6 +35,9 @@ if ('serviceWorker' in navigator) {
     <style id="customFontWeightCss"></style>
     
     <style>
+/* --- style.css --- */
+
+    
         :root {
             --bg-color: #f2f2f2;
             --text-color: #000;
@@ -1392,11 +1394,10 @@ body.theme-wechat .load-more, body.theme-imessage .load-more {
     letter-spacing: 1px !important;
 }
 
-/* ================= Jelly Pink 果冻少女粉主题 (修复版) ================= */
+/* ================= Jelly Pink 果冻少女粉主题 ================= */
 body.theme-pink {
     --bg-color: #fff0f3 !important;
-    /* 核心修复 1：改用变量覆盖，这样如果上传了自定义壁纸，壁纸就能完美透出来！ */
-    --bg-pattern: linear-gradient(135deg, #ffe0e6, #fff0f3) !important;
+    --bg-pattern: none !important; /* 去除粉色渐变渲染，防卡顿 */
     --text-color: #d15b7c !important;
     --border-color: rgba(255, 255, 255, 0.5) !important;
     --panel-bg: rgba(255, 255, 255, 0.4) !important;
@@ -1405,7 +1406,7 @@ body.theme-pink {
 }
 [data-theme="dark"] body.theme-pink {
     --bg-color: #2b1a1f !important;
-    --bg-pattern: linear-gradient(135deg, #2b1a1f, #1a0f12) !important;
+    --bg-pattern: none !important; /* 暗黑模式也去除渐变 */
     --text-color: #ffb3c6 !important;
     --border-color: rgba(255, 180, 200, 0.15) !important;
     --panel-bg: rgba(60, 30, 40, 0.5) !important;
@@ -1650,11 +1651,10 @@ body.theme-imessage .rp-bottom::before {
 /* 苹果暗黑模式下的颜色微调 */
 [data-theme="dark"] body.theme-imessage .red-packet-card { background: #1c1c1e !important; }
      
-     /* ================= Aero Glass 全透毛玻璃主题 ================= */
+/* ================= Aero Glass 全透毛玻璃主题 ================= */
 body.theme-glass {
     --bg-color: #f0f4f8 !important;
-    /* 默认带一个高级紫蓝渐变，如果用户上传了壁纸，壁纸会覆盖它并透出来 */
-    --bg-pattern: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%) !important;
+    --bg-pattern: none !important; /* 去除渐变背景，防卡顿，方便自定义壁纸透出 */
     --panel-bg: rgba(255, 255, 255, 0.4) !important;
     --bubble-bg: rgba(255, 255, 255, 0.55) !important;
     --border-color: rgba(255, 255, 255, 0.6) !important;
@@ -1662,7 +1662,7 @@ body.theme-glass {
 }
 [data-theme="dark"] body.theme-glass {
     --bg-color: #0f172a !important;
-    --bg-pattern: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    --bg-pattern: none !important; /* 暗黑模式也去除渐变 */
     --panel-bg: rgba(30, 41, 59, 0.5) !important;
     --bubble-bg: rgba(51, 65, 85, 0.5) !important;
     --border-color: rgba(255, 255, 255, 0.15) !important;
@@ -1702,7 +1702,349 @@ body.theme-glass .avatar, body.theme-glass .avatar-container {
     border-radius: 50% !important; /* 头像强制变正圆 */
 }
 
-    </style>
+/* ================= 随机念头卡片 (多主题完美适配版) ================= */
+
+/* --- 1. 默认漫画风主题 --- */
+.sudden-thought-card {
+    background: var(--panel-bg);
+    border: 3px solid var(--border-color); /* 漫画风粗边框 */
+    border-radius: 12px;
+    width: 230px;
+    box-shadow: 4px 4px 0 var(--border-color); /* 漫画风阴影 */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.event-card-top {
+    padding: 10px 15px;
+    border-bottom: 2px dashed var(--border-color);
+    font-weight: 900;
+    font-size: 0.8em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0.8;
+    font-style: italic;
+}
+.event-card-body {
+    padding: 15px;
+    color: var(--text-color);
+    font-size: 1.05em;
+    font-weight: bold;
+    line-height: 1.6;
+}
+
+/* --- 2. 微信 (WeChat) 专属卡片适配 (服务通知风) --- */
+body.theme-wechat .sudden-thought-card {
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    width: 250px !important;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.05) !important; /* 极弱的描边阴影 */
+}
+[data-theme="dark"] body.theme-wechat .sudden-thought-card { background: #2c2c2c !important; box-shadow: 0 0 0 1px rgba(255,255,255,0.05) !important; }
+
+body.theme-wechat .sudden-thought-card .event-card-top {
+    padding: 14px 15px 10px 15px !important;
+    border-bottom: 0.5px solid rgba(0,0,0,0.05) !important;
+    font-weight: normal !important;
+    font-size: 13px !important;
+    color: #999999 !important;
+    opacity: 1 !important;
+    font-style: normal !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+[data-theme="dark"] body.theme-wechat .sudden-thought-card .event-card-top { border-bottom-color: rgba(255,255,255,0.05) !important; color: #888888 !important; }
+
+/* 微信顶部的图标染成原生绿 */
+body.theme-wechat .sudden-thought-card .event-card-top svg {
+    color: #07c160 !important;
+    width: 15px !important; height: 15px !important;
+}
+[data-theme="dark"] body.theme-wechat .sudden-thought-card .event-card-top svg { color: #2bba00 !important; }
+
+body.theme-wechat .sudden-thought-card .event-card-body {
+    padding: 15px !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    color: #333333 !important;
+}
+[data-theme="dark"] body.theme-wechat .sudden-thought-card .event-card-body { color: #cccccc !important; }
+
+/* 微信：把下划线去掉，把重点词变成绿色 */
+body.theme-wechat .sudden-thought-card .event-card-body span[style*="text-decoration: underline"] {
+    text-decoration: none !important;
+    color: #07c160 !important;
+}
+[data-theme="dark"] body.theme-wechat .sudden-thought-card .event-card-body span[style*="text-decoration: underline"] { color: #2bba00 !important; }
+
+
+/* --- 3. 苹果 (iMessage) 专属卡片适配 (小程序 Rich Link 风) --- */
+body.theme-imessage .sudden-thought-card {
+    background: #ffffff !important;
+    border: 1px solid #e5e5ea !important;
+    border-radius: 18px !important; /* 苹果圆润边框 */
+    width: 250px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important;
+}
+[data-theme="dark"] body.theme-imessage .sudden-thought-card { background: #1c1c1e !important; border-color: #38383a !important; box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important; }
+
+body.theme-imessage .sudden-thought-card .event-card-top {
+    background: #f2f2f6 !important; /* 苹果顶部小灰条 */
+    padding: 10px 15px !important;
+    border-bottom: 1px solid #e5e5ea !important;
+    font-weight: 600 !important;
+    font-size: 11px !important;
+    color: #8e8e93 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-style: normal !important;
+}
+[data-theme="dark"] body.theme-imessage .sudden-thought-card .event-card-top { background: #2c2c2e !important; border-bottom-color: #38383a !important; color: #98989d !important; }
+
+body.theme-imessage .sudden-thought-card .event-card-body {
+    padding: 15px !important;
+    font-weight: normal !important;
+    font-size: 15px !important;
+    line-height: 1.4 !important;
+    color: #000000 !important;
+}
+[data-theme="dark"] body.theme-imessage .sudden-thought-card .event-card-body { color: #ffffff !important; }
+
+/* 苹果：去掉下划线，重点词变成经典的 iMessage 蓝色并加粗 */
+body.theme-imessage .sudden-thought-card .event-card-body span[style*="text-decoration: underline"] {
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    color: #0b84ff !important;
+}
+
+/* ================= 音乐分享卡片 (多主题完美适配) ================= */
+.music-chat-card {
+    display: flex; align-items: center; gap: 12px; padding: 10px; cursor: pointer;
+    width: 240px; position: relative; overflow: hidden;
+}
+.music-chat-card .mc-cover {
+    width: 45px; height: 45px; object-fit: cover; flex-shrink: 0;
+}
+.music-chat-card .mc-info {
+    flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;
+}
+.music-chat-card .mc-title {
+    font-weight: 900; font-size: 1.05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.music-chat-card .mc-singer {
+    font-size: 0.75em; font-weight: bold; opacity: 0.8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic;
+}
+.music-chat-card .mc-play-btn {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+}
+.music-chat-card .mc-play-btn svg { width: 12px; height: 12px; fill: currentColor; margin-left: 2px; }
+
+/* 1. 默认漫画风主题 */
+.music-chat-card {
+    background: var(--panel-bg); border: 3px solid var(--border-color);
+    border-radius: 12px; box-shadow: 4px 4px 0 var(--border-color); color: var(--text-color);
+}
+.music-chat-card .mc-cover { border-radius: 8px; border: 2px solid var(--border-color); background: var(--bg-color); }
+.music-chat-card .mc-play-btn { border: 2px solid var(--border-color); box-shadow: 2px 2px 0 var(--border-color); background: var(--bg-color); color: var(--text-color); }
+
+/* 2. 微信主题 (纯白干净小卡片) */
+body.theme-wechat .music-chat-card {
+    background: #ffffff !important; border: none !important; border-radius: 8px !important;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.05) !important; color: #333333 !important;
+}
+[data-theme="dark"] body.theme-wechat .music-chat-card { background: #2c2c2c !important; color: #cccccc !important; box-shadow: 0 0 0 1px rgba(255,255,255,0.05) !important; }
+body.theme-wechat .music-chat-card .mc-title { font-weight: 500 !important; font-size: 15px !important; }
+body.theme-wechat .music-chat-card .mc-singer { font-weight: normal !important; font-style: normal !important; opacity: 0.6 !important; }
+body.theme-wechat .music-chat-card .mc-cover { border: none !important; border-radius: 4px !important; }
+body.theme-wechat .music-chat-card .mc-play-btn { border: 1px solid rgba(0,0,0,0.1) !important; box-shadow: none !important; background: transparent !important; color: #666 !important; }
+[data-theme="dark"] body.theme-wechat .music-chat-card .mc-play-btn { border-color: rgba(255,255,255,0.1) !important; color: #999 !important; }
+
+/* 3. 苹果主题 (Apple Music 风圆润卡片) */
+body.theme-imessage .music-chat-card {
+    background: #f2f2f6 !important; border: 1px solid #e5e5ea !important; border-radius: 16px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important; color: #000000 !important;
+}
+[data-theme="dark"] body.theme-imessage .music-chat-card { background: #2c2c2e !important; border-color: #38383a !important; color: #ffffff !important; }
+body.theme-imessage .music-chat-card .mc-title { font-weight: 600 !important; font-size: 15px !important; }
+body.theme-imessage .music-chat-card .mc-singer { font-weight: normal !important; font-style: normal !important; color: #fa243c !important; opacity: 0.9 !important; } /* Apple Music 标志性粉红色 */
+body.theme-imessage .music-chat-card .mc-cover { border: none !important; border-radius: 8px !important; box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important; }
+body.theme-imessage .music-chat-card .mc-play-btn { border: none !important; box-shadow: none !important; background: #e5e5ea !important; color: #fa243c !important; }
+[data-theme="dark"] body.theme-imessage .music-chat-card .mc-play-btn { background: #1c1c1e !important; }
+
+/* 4. 少女粉主题 (果冻感) */
+body.theme-pink .music-chat-card {
+    background: rgba(255, 255, 255, 0.6) !important; backdrop-filter: blur(10px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.8) !important; border-radius: 20px !important;
+    box-shadow: inset 0 4px 6px rgba(255,255,255,0.7), 0 6px 12px rgba(255, 180, 195, 0.2) !important;
+    color: #d15b7c !important;
+}
+[data-theme="dark"] body.theme-pink .music-chat-card { background: rgba(80, 40, 50, 0.5) !important; border-color: rgba(255, 180, 200, 0.15) !important; color: #ffb3c6 !important; }
+body.theme-pink .music-chat-card .mc-cover { border-radius: 50% !important; border: 2px solid #fff !important; box-shadow: 0 2px 6px rgba(255,180,195,0.4) !important; }
+body.theme-pink .music-chat-card .mc-play-btn { background: linear-gradient(135deg, #ff9eb5, #ff7597) !important; color: #fff !important; border: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), 0 4px 8px rgba(255,117,151,0.3) !important; }
+
+/* 5. 毛玻璃主题 */
+body.theme-glass .music-chat-card {
+    background: rgba(255, 255, 255, 0.3) !important; backdrop-filter: blur(18px) !important; -webkit-backdrop-filter: blur(18px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.6) !important; border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important; color: var(--text-color) !important;
+}
+body.theme-glass .music-chat-card .mc-cover { border-radius: 8px !important; border: 1.5px solid rgba(255,255,255,0.5) !important; }
+body.theme-glass .music-chat-card .mc-play-btn { background: rgba(255,255,255,0.5) !important; color: var(--text-color) !important; border: 1.5px solid rgba(255,255,255,0.6) !important; box-shadow: none !important; }
+
+/* ================= 打卡与攒钱分享卡片 (多主题完美适配) ================= */
+
+/* 2. 微信主题 (纯白干净小卡片) */
+body.theme-wechat .checkin-chat-card {
+    background: #ffffff !important; border: none !important; border-radius: 8px !important;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.05) !important; color: #333333 !important; padding: 12px 14px !important;
+}
+[data-theme="dark"] body.theme-wechat .checkin-chat-card { background: #2c2c2c !important; color: #cccccc !important; box-shadow: 0 0 0 1px rgba(255,255,255,0.05) !important; }
+body.theme-wechat .checkin-chat-card .checkin-avatar { border: none !important; }
+body.theme-wechat .checkin-chat-card .checkin-progress-bar { border: none !important; background: rgba(0,0,0,0.05) !important; border-radius: 4px !important;}
+[data-theme="dark"] body.theme-wechat .checkin-chat-card .checkin-progress-bar { background: rgba(255,255,255,0.05) !important; }
+body.theme-wechat .checkin-chat-card .checkin-progress-fill { background: #07c160 !important; border-radius: 4px !important;}
+[data-theme="dark"] body.theme-wechat .checkin-chat-card .checkin-progress-fill { background: #2bba00 !important; }
+body.theme-wechat .checkin-chat-card span[style*="font-size:0.7em"] { background: rgba(7, 193, 96, 0.1) !important; color: #07c160 !important; border-radius: 4px !important; font-style: normal !important; font-weight: normal !important;}
+[data-theme="dark"] body.theme-wechat .checkin-chat-card span[style*="font-size:0.7em"] { background: rgba(43, 186, 0, 0.2) !important; color: #2bba00 !important; }
+
+/* 3. 苹果主题 (Apple 风圆润卡片) */
+body.theme-imessage .checkin-chat-card {
+    background: #f2f2f6 !important; border: 1px solid #e5e5ea !important; border-radius: 16px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important; color: #000000 !important; padding: 12px 14px !important;
+}
+[data-theme="dark"] body.theme-imessage .checkin-chat-card { background: #2c2c2e !important; border-color: #38383a !important; color: #ffffff !important; }
+body.theme-imessage .checkin-chat-card .checkin-avatar { border-color: #e5e5ea !important; }
+[data-theme="dark"] body.theme-imessage .checkin-chat-card .checkin-avatar { border-color: #38383a !important; }
+body.theme-imessage .checkin-chat-card .checkin-progress-bar { border: none !important; background: #e5e5ea !important; border-radius: 4px !important; }
+[data-theme="dark"] body.theme-imessage .checkin-chat-card .checkin-progress-bar { background: #38383a !important; }
+body.theme-imessage .checkin-chat-card .checkin-progress-fill { background: #0b84ff !important; border-radius: 4px !important; }
+body.theme-imessage .checkin-chat-card span[style*="font-size:0.7em"] { background: #0b84ff !important; color: #fff !important; border-radius: 6px !important; font-style: normal !important; font-weight: 500 !important;}
+
+/* 4. 少女粉主题 (果冻感) */
+body.theme-pink .checkin-chat-card {
+    background: rgba(255, 255, 255, 0.6) !important; backdrop-filter: blur(10px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.8) !important; border-radius: 20px !important;
+    box-shadow: inset 0 4px 6px rgba(255,255,255,0.7), 0 6px 12px rgba(255, 180, 195, 0.2) !important;
+    color: #d15b7c !important; padding: 12px 14px !important;
+}
+[data-theme="dark"] body.theme-pink .checkin-chat-card { background: rgba(80, 40, 50, 0.5) !important; border-color: rgba(255, 180, 200, 0.15) !important; color: #ffb3c6 !important; }
+body.theme-pink .checkin-chat-card .checkin-avatar { border-color: rgba(255, 255, 255, 0.8) !important; }
+[data-theme="dark"] body.theme-pink .checkin-chat-card .checkin-avatar { border-color: rgba(255, 180, 200, 0.2) !important; }
+body.theme-pink .checkin-chat-card .checkin-progress-bar { border: 1.5px solid rgba(255, 255, 255, 0.8) !important; background: rgba(255, 255, 255, 0.4) !important; border-radius: 8px !important;}
+[data-theme="dark"] body.theme-pink .checkin-chat-card .checkin-progress-bar { border-color: rgba(255, 180, 200, 0.2) !important; background: rgba(0, 0, 0, 0.2) !important; }
+body.theme-pink .checkin-chat-card .checkin-progress-fill { background: linear-gradient(135deg, #ff9eb5, #ff7597) !important; border-radius: 6px !important;}
+[data-theme="dark"] body.theme-pink .checkin-chat-card .checkin-progress-fill { background: linear-gradient(135deg, #a83c56, #8a2a40) !important; }
+
+/* 5. 毛玻璃主题 */
+body.theme-glass .checkin-chat-card {
+    background: rgba(255, 255, 255, 0.3) !important; backdrop-filter: blur(18px) !important; -webkit-backdrop-filter: blur(18px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.6) !important; border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important; color: var(--text-color) !important; padding: 12px 14px !important;
+}
+[data-theme="dark"] body.theme-glass .checkin-chat-card { background: rgba(30, 41, 59, 0.3) !important; border-color: rgba(255, 255, 255, 0.15) !important; }
+body.theme-glass .checkin-chat-card .checkin-progress-bar { border: 1.5px solid rgba(255,255,255,0.4) !important; background: rgba(0,0,0,0.05) !important; border-radius: 8px !important;}
+[data-theme="dark"] body.theme-glass .checkin-chat-card .checkin-progress-bar { border-color: rgba(255,255,255,0.1) !important; background: rgba(255,255,255,0.05) !important; }
+body.theme-glass .checkin-chat-card .checkin-progress-fill { background: var(--text-color) !important; border-radius: 6px !important;}
+
+/* ================= 悬浮歌词条 (灵动岛风格) ================= */
+#musicLyricBar {
+    position: fixed;
+    /* 👇 这里控制【普通所有排版】下歌词条的高度，数字越大越靠下！ */
+    top: 130px; 
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    width: max-content;
+    max-width: 85vw;
+    padding: 6px 16px;
+    background: var(--panel-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 3px 3px 0 var(--border-color);
+    font-weight: 900;
+    font-size: 0.85em;
+    color: var(--text-color);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none; /* 穿透点击，不挡事 */
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#musicLyricBar.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* --- 配合巨型悬浮岛主题动态下移 --- */
+.giant_floating_island #musicLyricBar {
+    /* 👇 这里控制【单独巨型悬浮岛排版】下歌词条的高度，数字越大越靠下！ */
+    top: 200px !important;
+}
+
+/* --- 微信主题适配 (柔和无边框) --- */
+body.theme-wechat #musicLyricBar {
+    background: rgba(0,0,0,0.65) !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    font-weight: normal !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* --- 苹果主题适配 (高斯模糊胶囊) --- */
+body.theme-imessage #musicLyricBar {
+    background: rgba(250,250,250,0.7) !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    color: #000 !important;
+    font-weight: 500 !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+[data-theme="dark"] body.theme-imessage #musicLyricBar {
+    background: rgba(30,30,30,0.7) !important;
+    border-color: rgba(255,255,255,0.05) !important;
+    color: #fff !important;
+}
+
+/* --- 少女粉主题 (果冻发光) --- */
+body.theme-pink #musicLyricBar {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1.5px solid rgba(255,255,255,0.8) !important;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.7), 0 4px 12px rgba(255, 180, 195, 0.2) !important;
+    color: #d15b7c !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+[data-theme="dark"] body.theme-pink #musicLyricBar {
+    background: rgba(43, 26, 31, 0.6) !important;
+    border-color: rgba(255, 180, 200, 0.15) !important;
+    color: #ffb3c6 !important;
+}
+
+/* --- 全透毛玻璃主题 --- */
+body.theme-glass #musicLyricBar {
+    background: rgba(255,255,255,0.2) !important;
+    border: 1.5px solid rgba(255,255,255,0.4) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+    color: var(--text-color) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+[data-theme="dark"] body.theme-glass #musicLyricBar {
+    background: rgba(0,0,0,0.3) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -1728,6 +2070,7 @@ body.theme-glass .avatar, body.theme-glass .avatar-container {
         <button class="side-toolbar-btn" onclick="openApiModal()" title="API 解读设置">
             <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
         </button>
+        
         <!-- 立刻回复按钮 (正在输入的聊天气泡图标) -->
         <button class="side-toolbar-btn" onclick="forceTaReply()" title="立刻回复">
             <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><circle cx="12" cy="12" r="1.5"></circle><circle cx="16" cy="12" r="1.5"></circle><circle cx="8" cy="12" r="1.5"></circle></svg>
@@ -1735,6 +2078,11 @@ body.theme-glass .avatar, body.theme-glass .avatar-container {
                 <!-- 网易云音乐按钮 -->
         <button class="side-toolbar-btn" onclick="openMusicModal()" title="网易云音乐">
             <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+        </button>
+        
+                <!-- 随机念头卡片按钮 -->
+        <button class="side-toolbar-btn" onclick="openRandomCardModal()" title="TA的随机念头">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="8" y1="12" x2="16" y2="12"></line><line x1="12" y1="8" x2="12" y2="16"></line></svg>
         </button>
         
         <!-- 发红包按钮 -->
@@ -3561,6 +3909,43 @@ body.theme-glass .avatar, body.theme-glass .avatar-container {
     </div>
 </div>
 
+<!-- 随机念头卡片设置模态框 (精美重构版) -->
+<div class="modal" id="randomCardModal" style="z-index: 99999;">
+    <div class="modal-content" style="max-width: 320px; padding: 20px; gap: 15px; border-radius: 16px; background: var(--bg-color);">
+        <div style="text-align:center; font-weight:900; font-size:1.2em; color: var(--text-color); font-style: italic;">SUDDEN THOUGHT</div>
+        
+        <!-- 沉浸式说明文案 -->
+        <div style="font-size:0.85em; opacity:0.8; text-align:center; line-height:1.5;">
+            设置 TA 偶尔冒出的小念头<br>每行填一个词，聊天时会组合触发。
+        </div>
+        
+        <!-- 模拟拼接效果展示，让你知道拼出来是什么样 -->
+        <div style="background: var(--panel-bg); border: 2px dashed var(--border-color); border-radius: 8px; padding: 12px; text-align: center; font-weight: 900; font-size: 0.9em; box-shadow: inset 0 0 10px rgba(0,0,0,0.02);">
+            TA <span style="text-decoration: underline; opacity: 0.6;">[动作]</span> <span style="text-decoration: underline; opacity: 0.6;">[行为]</span> <span style="text-decoration: underline; opacity: 0.6;">[对象]</span>
+        </div>
+
+        <div style="max-height: 40vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px;">
+            <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:0.85em; opacity:0.9;">动作 (例：想 / 希望 / 打算)</label>
+                <textarea id="slotAInput" rows="2" style="width: 100%; padding: 8px; border: 3px solid var(--border-color); border-radius: 8px; background: var(--panel-bg); color: var(--text-color); font-weight: 900; outline: none; resize:none;"></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:0.85em; opacity:0.9;">行为 (例：换一个 / 看看 / 检查)</label>
+                <textarea id="slotBInput" rows="2" style="width: 100%; padding: 8px; border: 3px solid var(--border-color); border-radius: 8px; background: var(--panel-bg); color: var(--text-color); font-weight: 900; outline: none; resize:none;"></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:0.85em; opacity:0.9;">对象 (例：专属备注 / 手机 / 聊天背景)</label>
+                <textarea id="slotCInput" rows="2" style="width: 100%; padding: 8px; border: 3px solid var(--border-color); border-radius: 8px; background: var(--panel-bg); color: var(--text-color); font-weight: 900; outline: none; resize:none;"></textarea>
+            </div>
+        </div>
+        
+        <div style="display:flex; gap:12px; margin-top:5px;">
+            <button class="outline-btn" style="flex:1; margin:0; border-radius:10px; padding: 12px;" onclick="document.getElementById('randomCardModal').style.display='none'">取消</button>
+            <button class="action-btn" style="flex:1; margin:0; border-radius:10px; padding: 12px;" onclick="saveRandomCardSettings()">保存</button>
+        </div>
+    </div>
+</div>
+
 <!-- 电话全屏界面 -->
     <div class="phone-modal" id="phoneCallModal">
         <div class="phone-avatar-container" id="phoneAvatarUI">梦</div>
@@ -3620,6 +4005,7 @@ body.theme-glass .avatar, body.theme-glass .avatar-container {
     </div>
     
     <script>
+/* --- main.js --- */
         const DB_NAME = 'YumeChatProDB';
         const DB_VERSION = 5;
         let db;
@@ -4942,7 +5328,7 @@ if (extraMsgData && extraMsgData.quote) {
 }
 
 let bubbleHtml = ""; let imgLoadAttr = isNew ? 'onload="window.scrollToBottom && scrollToBottom(false)"' : '';
-let isSpecialCard = text && (text.includes('class="checkin-chat-card"') || text.includes('class="red-packet-card"'));
+let isSpecialCard = text && (text.includes('class="checkin-chat-card"') || text.includes('class="red-packet-card"') || text.includes('class="sudden-thought-card"') || text.includes('class="event-card"') || text.includes('class="music-chat-card"'));
 let bClass = isSpecialCard ? '' : 'bubble';
 
 if (text && imgUrl) { 
@@ -7582,6 +7968,23 @@ setTimeout(() => {
     checkUnreadLetters(); 
 }, 2000);
 
+// ====== 随机念头卡片功能 ======
+function openRandomCardModal() {
+    document.getElementById('sideToolbar').classList.remove('open');
+    document.getElementById('slotAInput').value = currentSettings.cardSlotA || "想\n希望\n要求";
+    document.getElementById('slotBInput').value = currentSettings.cardSlotB || "更换\n要\n检查";
+    document.getElementById('slotCInput').value = currentSettings.cardSlotC || "备注\n字卡\n系统权限";
+    document.getElementById('randomCardModal').style.display = 'flex';
+}
+
+async function saveRandomCardSettings() {
+    currentSettings.cardSlotA = document.getElementById('slotAInput').value.trim();
+    currentSettings.cardSlotB = document.getElementById('slotBInput').value.trim();
+    currentSettings.cardSlotC = document.getElementById('slotCInput').value.trim();
+    await putToDB('settings', { key: 'config', value: currentSettings });
+    document.getElementById('randomCardModal').style.display = 'none';
+}
+
 /* ================= 完美红包系统逻辑 ================= */
 function openRedPacketModal() {
     document.getElementById('sideToolbar').classList.remove('open');
@@ -7687,6 +8090,53 @@ triggerYumeReply = async function() {
     // 先让 TA 走正常的回复流程（发字卡/表情）
     await originalTriggerYumeReplyRP();
     
+// === 注入 5% 概率掉落随机念头卡片 ===
+if (Math.random() < 0.05) {
+    await delay(1200); // 停顿一下假装在思考
+    
+    // 默认文案改得更自然
+    let listA = (currentSettings.cardSlotA || "想\n希望\n打算").split('\n').filter(i=>i.trim());
+    let listB = (currentSettings.cardSlotB || "换一个\n看看\n检查").split('\n').filter(i=>i.trim());
+    let listC = (currentSettings.cardSlotC || "专属备注\n字卡\n聊天背景").split('\n').filter(i=>i.trim());
+
+    let valA = listA[Math.floor(Math.random() * listA.length)] || "";
+    let valB = listB[Math.floor(Math.random() * listB.length)] || "";
+    let valC = listC[Math.floor(Math.random() * listC.length)] || "";
+
+    let activeChar = charactersList.find(c => c.id === currentChatId) || charactersList[0];
+    let cName = activeChar.name;
+
+    // 去掉中二的 SYSTEM，换成干净柔和的 SUDDEN THOUGHT 和一个小气泡图标
+    let cardHtml = `
+        <div class="sudden-thought-card">
+            <div class="event-card-top">
+                <span>SUDDEN THOUGHT</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="event-card-body">
+                ${cName} ${valA} ${valB} <span style="text-decoration: underline; text-underline-offset: 4px;">${valC}</span>
+            </div>
+        </div>
+    `;
+
+    const typingIndicator = document.getElementById('typingIndicator');
+    document.getElementById('chatContainer').appendChild(typingIndicator);
+    typingIndicator.style.display = 'flex';
+    setTimeout(() => { if (typeof scrollToBottom === 'function') scrollToBottom(false); }, 50);
+
+    await delay(1000); 
+    await saveAndRenderMsg('yume', cardHtml, null, Date.now(), true, activeChar);
+    
+    typingIndicator.style.display = 'none';
+    document.body.appendChild(typingIndicator);
+}
+    
+    // === 注入 5% 概率 TA 随机分享播放列表里的一首歌 ===
+if (cachedMusicList && cachedMusicList.length > 0 && Math.random() < 0.05) {
+    await delay(1500); // 假装在挑歌
+    const randomIdx = Math.floor(Math.random() * cachedMusicList.length);
+    await shareMusicCard(randomIdx, 'char');
+}
     // 回复完之后，3% 的概率额外给你弹一个红包！
     if (Math.random() < 0.03) {
         await delay(1000); // 停顿一秒钟，像是它发完消息突然想起来给你发红包
@@ -8887,6 +9337,8 @@ function renderHeaderLayout() {
     
     const charName = currentSettings.charName || "TA";
     const userName = currentSettings.userName || "我";
+    // 每次重绘顶栏前，先清空特殊排版标记
+document.body.classList.remove('giant_floating_island');
     
     // 微信主题排版：绝对居中，且完全无头像！
     if (currentSettings.themeStyle === 'wechat') {
@@ -8962,6 +9414,7 @@ function renderHeaderLayout() {
             </div>
         `;
     } else if (styleId === 'giant_floating_island') {
+    document.body.classList.add('giant_floating_island');
         let cAvatar = currentSettings.avatarUrl ? `background-image:url(${currentSettings.avatarUrl}); color:transparent;` : '';
         let uAvatar = currentSettings.userAvatarUrl ? `background-image:url(${currentSettings.userAvatarUrl}); color:transparent;` : '';
         let cChar = currentSettings.avatarUrl ? '' : charName.charAt(0);
@@ -8987,12 +9440,48 @@ function renderHeaderLayout() {
                     pointer-events: none !important; /* 🌟关键：让周围的透明区域允许手指滑动穿透 */
                 }
 
-                /* 👇 2. 动态调节聊天区和音乐盒的起跑线，防止开局第一条消息被悬浮舱盖住 */
-                #topMusicPlayerBox {
-                    padding-top: 170px !important; 
+                /* 👇 2. 魔改：将音乐播放器塞入中间区域，并悬挂列表面板 */
+                #chatContainer {
+                    padding-top: 180px !important; 
                 }
-                #topMusicPlayerBox[style*="none"] ~ #chatContainer {
-                    padding-top: 170px !important; 
+                #topMusicPlayerBox {
+                    padding-top: 0 !important;
+                    top: 65px !important; /* 调整高度，刚好在签名下方 */
+                    left: 50% !important;
+                    transform: translateX(-50%) !important;
+                    width: 175px !important; /* 宽度刚好塞进两头像中间的空隙 */
+                    z-index: 105 !important;
+                }
+
+                /* 缩小胶囊播放器，适应狭小空间 */
+                #topMusicPlayerBox .music-pill-box {
+                    height: 32px !important;
+                    padding: 2px 6px 2px 8px !important;
+                    background: var(--bg-color) !important;
+                    border: 2px solid var(--border-color) !important;
+                    box-shadow: 2px 2px 0 var(--border-color) !important;
+                }
+                #topMusicPlayerBox .music-note-icon { display: none !important; } /* 隐藏转圈图标省空间 */
+                #topMusicPlayerBox .music-scroll-title { font-size: 0.75em !important; margin-right: 4px !important;}
+                #topMusicPlayerBox .music-pill-ctrl { gap: 2px !important; }
+                #topMusicPlayerBox .music-pill-ctrl .icon-btn { width: 22px !important; height: 22px !important; border-width: 1.5px !important; box-shadow: 1px 1px 0 var(--border-color) !important; }
+                #topMusicPlayerBox .music-pill-ctrl .icon-btn svg { width: 12px !important; height: 12px !important; }
+                #topMusicPlayerBox #musicCardMode { display: none !important; } /* 空间不够，屏蔽大卡片模式 */
+
+                /* 展开的列表面板：悬浮在大框框下方 */
+                #topMusicPlayerBox .music-list-panel {
+                    position: fixed !important;
+                    top: 130px !important; /* 高度刚好在大面板的下面一点点 */
+                    left: 50% !important;
+                    transform: translateX(-50%) !important;
+                    width: calc(100vw - 30px) !important;
+max-width: none !important;
+                    border-radius: 12px !important;
+                    border-top: 3px solid var(--border-color) !important;
+                    margin: 0 !important;
+                    box-shadow: 6px 6px 0 var(--border-color) !important;
+                    background: var(--panel-bg) !important;
+                    z-index: 99 !important;
                 }
                 
                 /* 👇 3. 恢复悬浮大框框本身的实体点击，确保上面的按钮还能按 */
@@ -9744,37 +10233,51 @@ function toggleSelectAllSongs(isChecked) {
     cbs.forEach(cb => cb.checked = isChecked);
 }
 
-// 加入播放列表并存入数据库！
-async function confirmAddSelectedSongs() {
+// 加入播放列表（附带是否下载歌词的智能分离选项）
+window.confirmAddSelectedSongs = async function() {
     const cbs = document.querySelectorAll('.song-checkbox:checked');
     if (cbs.length === 0) {
-        showMusicToast("请至少勾选一首歌哦！"); // 换成悬浮提示
+        showMusicToast("请至少勾选一首歌哦！");
         return;
     }
     
-    const selectedTracks = [];
-    cbs.forEach(cb => {
-        const idx = parseInt(cb.value);
-        if (tempDetailSongs[idx]) {
-            selectedTracks.push({...tempDetailSongs[idx]}); 
-        }
-    });
+    // 🌟 智能弹窗：让用户自己选要不要歌词
+    const needLyrics = confirm(`您勾选了 ${cbs.length} 首歌。\n\n是否同时下载并缓存它们的歌词？\n\n【确定】= 同时下载歌词 (歌曲较多时会很慢)\n【取消】= 仅极速导入歌曲 (以后听的时候会自动补齐歌词)`);
     
-    // 合并并去重(基于歌曲ID防止重复添加同一个URL)
+    if (needLyrics) {
+        showMusicToast("正在批量拉取歌词，这可能需要几十秒，请耐心稍候...");
+    }
+
+    const cookie = localStorage.getItem('netease_cookie') || '';
     const currentIds = new Set(cachedMusicList.map(m => m.id));
     let addCount = 0;
-    selectedTracks.forEach(st => {
-        if (!currentIds.has(st.id)) {
+    
+    for (let cb of cbs) {
+        const idx = parseInt(cb.value);
+        let st = tempDetailSongs[idx];
+        if (st && !currentIds.has(st.id)) {
+            // 如果用户选了要歌词，才去费时费力拉取
+            if (needLyrics) {
+                try {
+                    const res = await fetch(`${MY_API_BASE}/lyric?id=${st.id}&cookie=${encodeURIComponent(cookie)}&timerstamp=${Date.now()}`);
+                    const data = await res.json();
+                    if (data && data.lrc && data.lrc.lyric) {
+                        st.lyric = data.lrc.lyric; // 存入原生态 LRC 文本
+                    }
+                } catch(e) {
+                    console.log(`歌曲 ${st.title} 歌词拉取失败`);
+                }
+            }
+            
             cachedMusicList.push(st);
             addCount++;
         }
-    });
+    }
     
     // 将播放列表彻底写入持久化数据库！
     await putToDB('settings', { key: 'cachedMusicList', value: cachedMusicList });
     
-    // 换成悬浮轻提示，并且自动切回列表
-    showMusicToast(`✅ 成功添加 ${addCount} 首新歌！`);
+    showMusicToast(`极速添加了 ${addCount} 首新歌！`);
     closePlaylistDetail();
     switchMusicTab('list');
 }
@@ -9917,12 +10420,19 @@ function renderTopPlaylist() {
     const container = document.getElementById('musicListRenderUI');
     container.innerHTML = '';
     cachedMusicList.forEach((song, idx) => {
-        const item = document.createElement('div');
-        item.className = `m-l-item ${idx === currentPlayingIndex ? 'playing' : ''}`;
-        item.innerHTML = `<span style="overflow:hidden; text-overflow:ellipsis;">${song.title} - ${song.singer||''}</span>`;
-        item.onclick = () => { playSpecificMusic(idx); };
-        container.appendChild(item);
-    });
+    const item = document.createElement('div');
+    item.className = `m-l-item ${idx === currentPlayingIndex ? 'playing' : ''}`;
+    item.style.cssText = "display:flex; justify-content:space-between; align-items:center;";
+    item.innerHTML = `
+        <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:10px;" onclick="playSpecificMusic(${idx})">
+            ${song.title} - ${song.singer||''}
+        </div>
+        <button class="icon-btn" style="border:none; background:transparent; padding:4px; box-shadow:none; flex-shrink:0;" onclick="event.stopPropagation(); shareMusicCard(${idx}, 'user'); toggleMusicListPanel();">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+    `;
+    container.appendChild(item);
+});
 }
 
 // 播放/暂停（附带断点记忆唤醒）
@@ -10040,6 +10550,171 @@ window.resetFloatingBallPos = async function() {
     }
 };
 
-    </script>
+// 生成并发送音乐分享卡片
+async function shareMusicCard(idx, sender = 'user') {
+    if (!cachedMusicList || !cachedMusicList[idx]) return;
+    const song = cachedMusicList[idx];
+    const coverUrl = song.cover || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='none' stroke='black'><circle cx='50' cy='50' r='30'/></svg>";
+    
+    const htmlStr = `
+        <div class="music-chat-card" onclick="playSpecificMusic(${idx})">
+            <img class="mc-cover" src="${coverUrl}" />
+            <div class="mc-info">
+                <div class="mc-title">${song.title}</div>
+                <div class="mc-singer">${song.singer || '未知歌手'}</div>
+            </div>
+            <div class="mc-play-btn">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            </div>
+        </div>
+    `;
+
+    if (sender === 'user') {
+        const qData = currentQuoteData; clearQuote();
+        await saveAndRenderMsg('user', htmlStr, null, Date.now(), true, null, qData);
+        if (!isBatchMode) simulateReadAndReply();
+    } else {
+        let activeChar = charactersList.find(c => c.id === currentChatId) || charactersList[0];
+        const typingIndicator = document.getElementById('typingIndicator');
+        document.getElementById('chatContainer').appendChild(typingIndicator);
+        typingIndicator.style.display = 'flex';
+        setTimeout(() => { if (typeof scrollToBottom === 'function') scrollToBottom(false); }, 50);
+        await delay(1000); 
+        await saveAndRenderMsg('yume', htmlStr, null, Date.now(), true, activeChar);
+        typingIndicator.style.display = 'none';
+        document.body.appendChild(typingIndicator);
+    }
+}
+
+/* ================= 云端歌词解析与悬浮条引擎 ================= */
+let currentLyrics = []; // 存放解析后的当前歌曲时间轴
+let currentLyricIndex = -1; // 记录当前正唱到哪一句
+
+// 1. 动态在页面生成一个歌词条容器
+const lyricBarEl = document.createElement('div');
+lyricBarEl.id = 'musicLyricBar';
+document.body.appendChild(lyricBarEl);
+
+// 2. 解析 LRC 歌词文件的正则引擎
+function parseLyric(lrcStr) {
+    const lines = lrcStr.split('\n');
+    const result = [];
+    // 匹配 [00:15.30] 这种时间格式
+    const timeReg = /\[(\d{2}):(\d{2}(?:\.\d{2,3})?)\]/;
+    
+    for (let line of lines) {
+        const match = line.match(timeReg);
+        if (match) {
+            const min = parseInt(match[1]);
+            const sec = parseFloat(match[2]);
+            const time = min * 60 + sec;
+            const text = line.replace(timeReg, '').trim();
+            // 只保留有文字的行
+            if (text) result.push({ time, text });
+        }
+    }
+    return result;
+}
+
+// 3. 拦截并覆盖原本的播放函数，优先读取本地持久化歌词
+const originalPlaySpecificMusicLyric = window.playSpecificMusic;
+window.playSpecificMusic = function(idx) {
+    originalPlaySpecificMusicLyric(idx); // 先执行原本的播放逻辑
+    const song = cachedMusicList[idx];
+    
+    // 初始化清空上一首歌的残余
+    currentLyrics = [];
+    currentLyricIndex = -1;
+    lyricBarEl.classList.remove('show');
+    lyricBarEl.innerText = '';
+
+    if (!song) return;
+
+    // 🌟 优先读取本地已经永久缓存好的歌词！(0延迟，无需梯子，断网也能看)
+    if (song.lyric) {
+        currentLyrics = parseLyric(song.lyric);
+        return;
+    }
+
+    // 如果是你以前（更新代码前）加的歌没有缓存歌词，且不是外部直链，作为兜底再尝试联网拉取一次
+    if (song.id && !String(song.id).startsWith('custom_')) {
+        const cookie = localStorage.getItem('netease_cookie') || '';
+        fetch(`${MY_API_BASE}/lyric?id=${song.id}&cookie=${encodeURIComponent(cookie)}&timerstamp=${Date.now()}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.lrc && data.lrc.lyric) {
+                    currentLyrics = parseLyric(data.lrc.lyric);
+                    // 顺手把它存到本地数据库，下次就不用拉了
+                    song.lyric = data.lrc.lyric;
+                    putToDB('settings', { key: 'cachedMusicList', value: cachedMusicList });
+                }
+            })
+            .catch(err => console.log("歌词拉取失败:", err));
+    }
+};
+
+// 4. 监听音频的实时播放进度，毫秒级对账
+audioPlayer.addEventListener('timeupdate', () => {
+    // 没歌词或者没开顶栏，就不显示
+    if (currentLyrics.length === 0 || currentSettings.showTopMusicBar === "false") {
+        lyricBarEl.classList.remove('show');
+        return;
+    }
+
+    const currentTime = audioPlayer.currentTime;
+    
+    // 找出当前时间处于哪一句歌词
+    let activeIndex = -1;
+    for (let i = 0; i < currentLyrics.length; i++) {
+        if (currentTime >= currentLyrics[i].time) {
+            activeIndex = i;
+        } else {
+            break; // 因为时间轴是按顺序排的，超过了直接打断
+        }
+    }
+
+    // 如果找出来的这一句和刚才那句不一样，说明唱到下一句了，更新文字！
+    if (activeIndex !== currentLyricIndex && activeIndex !== -1) {
+        currentLyricIndex = activeIndex;
+        lyricBarEl.innerText = currentLyrics[activeIndex].text;
+        
+        // 文字更新时加上显示动画
+        if (!lyricBarEl.classList.contains('show')) {
+            lyricBarEl.classList.add('show');
+        }
+    }
+});
+
+// 5. 如果暂停播放，隐藏歌词条；继续播放，恢复歌词条
+audioPlayer.addEventListener('pause', () => {
+    lyricBarEl.classList.remove('show');
+});
+audioPlayer.addEventListener('play', () => {
+    if (currentLyrics.length > 0 && currentLyricIndex !== -1 && currentSettings.showTopMusicBar !== "false") {
+        lyricBarEl.classList.add('show');
+    }
+});
+
+// 6. 完美开机闭环：如果刚开机自动恢复了播放列表，顺手把记忆的那首歌歌词也拉下来！
+setTimeout(() => {
+    if (cachedMusicList && cachedMusicList.length > 0) {
+        let idx = currentSettings.lastMusicIndex !== undefined ? currentSettings.lastMusicIndex : 0;
+        if (idx >= cachedMusicList.length) idx = 0;
+        const song = cachedMusicList[idx];
+        
+        if (song && song.id && !String(song.id).startsWith('custom_')) {
+            const cookie = localStorage.getItem('netease_cookie') || '';
+            fetch(`${MY_API_BASE}/lyric?id=${song.id}&cookie=${encodeURIComponent(cookie)}&timerstamp=${Date.now()}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.lrc && data.lrc.lyric) {
+                        currentLyrics = parseLyric(data.lrc.lyric);
+                    }
+                }).catch(()=>{});
+        }
+    }
+}, 2000);
+</script>
+    
 </body>
 </html>

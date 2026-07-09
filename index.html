@@ -2269,6 +2269,46 @@ body.theme-magazine button.wechat-more-btn,
 body.theme-magazine .top-btn.wechat-more-btn {
     display: none !important;
 }
+
+/* ================= 右下角公告图标样式 ================= */
+.notice-icon-btn {
+    position: fixed;
+    right: 15px;
+    bottom: 120px; /* 放在输入框上方，不挡打字 */
+    width: 44px;
+    height: 44px;
+    background: var(--panel-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--border-color);
+    z-index: 85; 
+    color: var(--text-color);
+    transition: transform 0.1s;
+    animation: bounceNotice 2s infinite;
+}
+.notice-icon-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0; }
+.notice-icon-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.notice-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: #ff4444;
+    border: 2px solid var(--panel-bg);
+    border-radius: 50%;
+}
+@keyframes bounceNotice {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+    60% { transform: translateY(-4px); }
+}
+/* 暗黑模式下红点边框适配 */
+[data-theme="dark"] .notice-dot { border-color: var(--panel-bg); }
 </style>
 
 </head>
@@ -2321,6 +2361,31 @@ body.theme-magazine .top-btn.wechat-more-btn {
     <div class="side-toolbar-handle" onclick="toggleSideToolbar()">
         <!-- 默认向右的箭头 -->
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </div>
+</div>
+
+<!-- 新增：右下角公告通知小铃铛 -->
+<div id="noticeIconBtn" class="notice-icon-btn" onclick="openNoticeModal()" style="display: none;">
+    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+    <div class="notice-dot"></div>
+</div>
+
+<!-- 新增：公告与简易教程弹窗 -->
+<div class="modal" id="noticeModal" style="z-index: 9999999;">
+    <div class="modal-content" style="max-width: 320px; padding: 25px 20px; gap: 15px; border-radius: 12px; background: var(--panel-bg);">
+        <div style="text-align:center; font-weight:900; font-size:1.3em; color: var(--text-color); font-style: italic;">SYSTEM NOTICE</div>
+        <div style="font-size: 0.95em; color: var(--text-color); line-height: 1.6; max-height: 50vh; overflow-y: auto; padding-right: 5px;">
+            <p style="font-weight: bold; margin-bottom: 8px;">欢迎来到 Illusion Chat！简易使用指南：</p>
+            <ul style="padding-left: 20px; margin-bottom: 10px; opacity: 0.9; display: flex; flex-direction: column; gap: 6px;">
+                <li><b>悬浮功能：</b>屏幕右侧有一个悬浮球，点开就是【应用面板】（包含打卡、记账、桌宠等）。</li>
+                <li><b>快捷侧栏：</b>点击左下角的 <b>&gt;</b> 箭头，可以展开收起音乐播放器和发红包功能。</li>
+                <li><b>长按消息：</b>长按聊天气泡可以进行回复、复制、收藏或删除。</li>
+                <li><b>深度美化：</b>点击右上角的 ⚙️ 齿轮，可以自定义几乎所有的排版、颜色、头像和气泡样式。</li>
+                <li><b>连发模式：</b>点输入框左边的按钮可以进入连发，一口气打完字再发送！</li>
+            </ul>
+            <p style="opacity: 0.8; font-size: 0.9em; text-align: center; margin-top: 10px;">祝你玩得开心~</p>
+        </div>
+        <button class="action-btn" style="border-radius: 8px; margin-top: 5px;" onclick="closeNoticeModal()">我知道了</button>
     </div>
 </div>
 
@@ -3011,11 +3076,12 @@ body.theme-magazine .top-btn.wechat-more-btn {
                             <option value="ALL">全部分组</option>
                         </select>
                         <div class="batch-actions" style="display: flex; gap: 12px; font-weight: 900; font-size: 0.9em; flex-shrink: 0; white-space: nowrap;">
-                            <span onclick="toggleSelectAllCards()">全选</span>
-                            <span onclick="clearCardSelection()">取消</span>
-                            <span onclick="moveSelectedCards()">移动</span>
-                            <span onclick="deleteSelectedCards()" style="color: #ff4444;">删除</span>
-                        </div>
+    <span onclick="toggleSelectAllCards()">全选</span>
+    <span onclick="clearCardSelection()">取消</span>
+    <span onclick="moveSelectedCards()">移动</span>
+    <span onclick="removeDuplicateCards()" style="color: #4CAF50;">去重</span>
+    <span onclick="deleteSelectedCards()" style="color: #ff4444;">删除</span>
+</div>
                     </div>
                     
                     <div style="margin-bottom: 10px;">
@@ -4269,7 +4335,9 @@ body.theme-magazine .top-btn.wechat-more-btn {
     
     <script>
 /* --- main.js --- */
-        const DB_NAME = 'YumeChatProDB';
+const NOTICE_VERSION = "1.0"; // 更新这个数字，就能让大家重新看到公告
+        
+                        const DB_NAME = 'YumeChatProDB';
         const DB_VERSION = 5;
         let db;
 
@@ -4277,7 +4345,7 @@ body.theme-magazine .top-btn.wechat-more-btn {
         let currentChatId = 'default';
 
                 let currentSettings = { 
-theme: "light", dataId: generateUUID(), enableKeepAlive: "false", petEnabled: "false", petSize: 100, petSpeed: 2, petRoam: "false", petIdleUrl: "", petWalkUrl: "", petDragUrl: "", charName: "TA", userName: "我", minTime: 1.0, maxTime: 3.0, readButNoReply: "false", showFloatingBall: "false", enableStats: "true", showDotBg: "true", enableCardSplicing: "false", proactiveMsgEnabled: "false", proactiveMsgTime: 5,
+theme: "light", dataId: generateUUID(), enableKeepAlive: "false", petEnabled: "false", petSize: 100, petSpeed: 2, petRoam: "false", petIdleUrl: "", petWalkUrl: "", petDragUrl: "", charName: "TA", userName: "我", minTime: 1.0, maxTime: 3.0, readButNoReply: "false", showFloatingBall: "true", enableStats: "true", showDotBg: "true", enableCardSplicing: "false", proactiveMsgEnabled: "false", proactiveMsgTime: 5,
     avatarShape: "square",
             avatarUrl: "", frameUrl: "", frameX: 50, frameY: 50, frameScale: 100, 
             userAvatarUrl: "", userFrameUrl: "", userFrameX: 50, userFrameY: 50, userFrameScale: 100, 
@@ -4419,13 +4487,18 @@ resolve();
 
         window.onload = async () => {
             await initDB();
+            
+            // --- 检查公告版本 ---
+            if (localStorage.getItem('yume_notice_version') !== NOTICE_VERSION) {
+                document.getElementById('noticeIconBtn').style.display = 'flex';
+            }
+
             setTimeout(() => {
                 const splash = document.getElementById('splashScreen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 300);
                 scrollToBottom(true);
             }, 1000);
-
         }
 
         async function toggleTheme() {
@@ -11154,6 +11227,73 @@ async function updateRedPacketStateUI(rpId, status) {
             break;
         }
     }
+}
+
+/* ================= 公告系统逻辑 ================= */
+function openNoticeModal() {
+    document.getElementById('noticeModal').style.display = 'flex';
+    document.getElementById('noticeIconBtn').style.animation = 'none'; // 点开就停止跳动
+}
+
+function closeNoticeModal() {
+    document.getElementById('noticeModal').style.display = 'none';
+    document.getElementById('noticeIconBtn').style.display = 'none';
+    // 存入本地，标记已读
+    localStorage.setItem('yume_notice_version', NOTICE_VERSION);
+}
+
+/* ================= 字卡一键去重功能 ================= */
+async function removeDuplicateCards() {
+    // 1. 获取所有的字卡
+    const allCards = await getAllFromDB('wordCards');
+    if (allCards.length === 0) {
+        showCustomConfirm('字卡库是空的，不需要去重哦！', () => {});
+        return;
+    }
+
+    // 2. 利用 Set 集合来记录已经出现过的句子，智能比对
+    const seenTexts = new Set();
+    const duplicateIds = []; // 用来存多余的那些废卡 ID
+
+    for (let card of allCards) {
+        const txt = card.text.trim();
+        if (seenTexts.has(txt)) {
+            // 如果这句话之前见过了，说明它是重复的，记录下它的 ID
+            duplicateIds.push(card.id);
+        } else {
+            // 如果没见过，把它加进“见过”的集合里
+            seenTexts.add(txt);
+        }
+    }
+
+    // 3. 如果没发现重复
+    if (duplicateIds.length === 0) {
+        showCustomConfirm('太棒了，没有发现任何重复的字卡！', () => {});
+        return;
+    }
+
+    // 4. 发现重复，弹窗确认清理
+    showCustomConfirm(`扫描到 ${duplicateIds.length} 条完全重复的字卡，确定要一键清理吗？\n(仅保留其中一条)`, async () => {
+        // 后台静默删除
+        for (let id of duplicateIds) {
+            await deleteFromDB('wordCards', id);
+            selectedCardIds.delete(id); // 防错：如果它刚好被勾选了也清掉
+        }
+        
+        // 刷新列表和分组
+        await updateCategoriesList();
+        renderCategorySelects();
+        renderReplyGroups();
+        renderCardsList();
+
+        // 弹个优雅的小悬浮提示，不打断操作
+        let t = document.createElement('div');
+        t.style.cssText = 'position:fixed; bottom:120px; left:50%; transform:translateX(-50%); background:var(--text-color); color:var(--bg-color); padding:8px 16px; border-radius:20px; font-weight:900; font-size:0.9em; z-index:999999; opacity:0; transition:opacity 0.3s; pointer-events:none; box-shadow:0 4px 10px rgba(0,0,0,0.2);';
+        t.innerText = `成功清理了 ${duplicateIds.length} 条重复字卡！`;
+        document.body.appendChild(t);
+        setTimeout(()=>t.style.opacity='1', 10);
+        setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 1500);
+    });
 }
 </script>
     

@@ -2894,11 +2894,6 @@ body.theme-journal .mini-phone-icon { background: #cc4d4d !important; color: #ff
 </head>
 <body>
 
-<!-- 👇 专门用来确认缓存是否刷新的红色悬浮窗 👇 -->
-<div id="versionCheck" style="position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: #ff4444; color: #fff; padding: 6px 16px; border-radius: 20px; font-weight: 900; font-size: 14px; z-index: 9999999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); pointer-events: none;">
-    🔥 缓存刷新成功！当前版本: V2.0
-</div>
-
 <audio id="keepAliveAudio" src="silence.mp3" loop playsinline style="display:none;"></audio>
 
 <div id="splashScreen">
@@ -3067,7 +3062,7 @@ body.theme-journal .mini-phone-icon { background: #cc4d4d !important; color: #ff
     </div>
 
     <!-- 音乐播放器实体组件 (紧贴在 header 下面) -->
-    <audio id="bgMusicAudio" style="display:none;" onended="playNextMusic()"></audio>
+    <audio id="bgMusicAudio" style="display:none;" onended="playNextMusic()" crossorigin="anonymous" referrerpolicy="no-referrer"></audio>
     <div id="topMusicPlayerBox" style="display:none; padding: 0 12px 10px 12px; z-index: 98; position: absolute; top: 60px; left: 0; right: 0; pointer-events: none;">
         
         <!-- 1. 小胶囊形态 -->
@@ -11746,36 +11741,60 @@ function renderTopPlaylist() {
 });
 }
 
+// --- 新增：获取真实歌曲直链的核心引擎 ---
+async function fetchRealMusicUrl(song) {
+    // 如果是外部导入的直链，直接返回不用解析
+    if (!song.id || String(song.id).startsWith('custom_')) return song.url;
+
+    const cookie = localStorage.getItem('netease_cookie') || '';
+    try {
+        // 调用你部署的 Vercel API，带上你的尊贵身份，获取 VIP 也能听的真实直链！
+        const res = await fetch(`${MY_API_BASE}/song/url?id=${song.id}&cookie=${encodeURIComponent(cookie)}&timestamp=${Date.now()}`);
+        const data = await res.json();
+        if (data && data.data && data.data[0] && data.data[0].url) {
+            // 强行把 http 替换成 https，完美兼容 Github Pages，绝不报错
+            return data.data[0].url.replace(/^http:\/\//i, 'https://');
+        }
+    } catch (err) {
+        console.log("获取真实链接失败，准备使用备用链接", err);
+    }
+    // 兜底：如果 API 抽风了，把原本的外链也强行升级成 HTTPS
+    return song.url.replace(/^http:\/\//i, 'https://');
+}
+
 // 播放/暂停（附带断点记忆唤醒）
-function toggleMusicPlay() {
+async function toggleMusicPlay() {
     if (!cachedMusicList || cachedMusicList.length === 0) return;
-    
-    // 防错保护：如果当前索引是-1或者超出了列表，强行纠正为 0
+
     if (currentPlayingIndex === -1 || currentPlayingIndex >= cachedMusicList.length) {
         currentPlayingIndex = 0;
     }
-    
+
     if (audioPlayer.paused) {
-        // 如果是刚开机，src还是空的，注入URL并跳到记录的时间点
-        if (!audioPlayer.src || audioPlayer.src.includes(window.location.host) || audioPlayer.src === window.location.href) {
-            audioPlayer.src = cachedMusicList[currentPlayingIndex].url;
+        // 【核心黑科技】：先给播放器塞个空音频垫底，骗过手机浏览器的“禁止自动播放”限制
+        if (!audioPlayer.src || audioPlayer.src.includes(window.location.host)) {
+            audioPlayer.src = "silence.mp3";
+        }
+        audioPlayer.play().catch(e=>{});
+
+        const song = cachedMusicList[currentPlayingIndex];
+        // 瞬间向你的服务器请求这首歌此时此刻的真实链接（还能防链接过期）
+        const realUrl = await fetchRealMusicUrl(song);
+        
+        // 只有当 src 不匹配时才重新赋值（防止断点记忆被重置）
+        if (audioPlayer.src !== realUrl) {
+            audioPlayer.src = realUrl;
             if (currentSettings.lastMusicTime) {
                 audioPlayer.currentTime = currentSettings.lastMusicTime;
             }
         }
-        
-        // 增加容错：捕获被浏览器拦截的错误防止彻底卡死
-        const playPromise = audioPlayer.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log("音频播放被拦截，可能是网易云VIP无版权歌曲或需要交互解锁：", error);
-                // 遇到加载错误的歌，尝试帮你把按钮状态改回去
-                updatePlayIconState(); 
-            });
-        }
+
+        audioPlayer.play().catch(e => {
+            console.log("播放依然被拦截:", e);
+            updatePlayIconState(); 
+        });
     } else {
         audioPlayer.pause();
-        // 暂停时立刻保存一下进度
         currentSettings.lastMusicTime = audioPlayer.currentTime;
         putToDB('settings', { key: 'config', value: currentSettings });
     }
@@ -11783,16 +11802,22 @@ function toggleMusicPlay() {
 }
 
 // 播放指定的某首歌
-function playSpecificMusic(idx) {
+async function playSpecificMusic(idx) {
     if (!cachedMusicList || !cachedMusicList[idx]) return;
     currentPlayingIndex = idx;
-    
-    // 记忆切歌
+
     currentSettings.lastMusicIndex = idx;
     currentSettings.lastMusicTime = 0; // 切新歌进度归零
     putToDB('settings', { key: 'config', value: currentSettings });
-    
-    audioPlayer.src = cachedMusicList[currentPlayingIndex].url;
+
+    // 【核心黑科技】：骗过手机限制
+    audioPlayer.src = "silence.mp3";
+    audioPlayer.play().catch(e=>{});
+
+    const song = cachedMusicList[currentPlayingIndex];
+    const realUrl = await fetchRealMusicUrl(song);
+
+    audioPlayer.src = realUrl;
     audioPlayer.play();
     syncTopMusicPlayerUI();
     updatePlayIconState();

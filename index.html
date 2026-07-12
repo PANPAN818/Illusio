@@ -3147,7 +3147,7 @@ body.theme-journal .mini-phone-icon { background: #cc4d4d !important; color: #ff
                 <div style="padding: 12px; border-bottom: 4px solid var(--border-color); display: flex; flex-direction: column; gap: 8px; background: var(--bg-color);">
                     <div style="display:flex; gap:10px;">
                         <button class="outline-btn" style="margin:0; padding:8px; font-size:0.95em; flex:1; border-radius: 8px;" onclick="document.getElementById('stickerUploadInput').click()">+ 上传本地图片</button>
-                        <input type="file" id="stickerUploadInput" accept="image/*" style="display:none;" onchange="addLocalSticker(event)">
+                        <input type="file" id="stickerUploadInput" accept="image/*" multiple style="display:none;" onchange="addLocalSticker(event)">
                     </div>
                     <div style="display:flex; gap:10px; align-items: stretch;">
                         <textarea id="stickerUrlInput" rows="1" style="flex:1; padding:8px; border:3px solid var(--border-color); border-radius:8px; font-size:0.95em; resize:none; font-weight:900; background:var(--panel-bg); color:var(--text-color); outline:none;" placeholder="粘贴图床直链导入..."></textarea>
@@ -7251,25 +7251,47 @@ function showCustomConfirm(text, onYes) {
             await renderStickers();
         }
 
-        function addLocalSticker(e) {
-            const file = e.target.files[0]; if (!file) return;
+        async function addLocalSticker(e) {
+    const files = e.target.files; 
+    if (!files || files.length === 0) return;
+    
+    // 贴心的悬浮提示
+    let t = document.createElement('div');
+    t.style.cssText = 'position:fixed; bottom:120px; left:50%; transform:translateX(-50%); background:var(--text-color); color:var(--bg-color); padding:8px 16px; border-radius:20px; font-weight:900; font-size:0.9em; z-index:999999; opacity:0; transition:opacity 0.3s; pointer-events:none; box-shadow:0 4px 10px rgba(0,0,0,0.2);';
+    t.innerText = `正在处理 ${files.length} 张表情...`;
+    document.body.appendChild(t);
+    setTimeout(()=>t.style.opacity='1', 10);
+    
+    // 循环处理用户选中的所有图片
+    for(let i = 0; i < files.length; i++) {
+        const file = files[i];
+        await new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = async function() {
                     const canvas = document.createElement('canvas');
                     let width = img.width, height = img.height;
-                    if (width > 300) { height = Math.round((height * 300) / width); width = 300; } // 表情包压缩更小一点
+                    if (width > 300) { height = Math.round((height * 300) / width); width = 300; } // 压缩尺寸
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
                     const b64 = canvas.toDataURL('image/webp', 0.8);
                     await putToDB('stickers', { url: b64 });
-                    await renderStickers();
+                    resolve(); // 这张图处理完毕，进行下一张
                 };
                 img.src = event.target.result;
             };
-            reader.readAsDataURL(file); e.target.value = '';
-        }
+            reader.readAsDataURL(file);
+        });
+    }
+    
+    e.target.value = ''; // 清空选择，防止选同样的图不触发
+    await renderStickers(); // 全部存完后，一次性刷新界面
+    
+    // 提示完成并消失
+    t.innerText = '表情包导入成功！';
+    setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 1500);
+}
         
                 /* ================= CSS 预设库逻辑 (存入 IndexedDB) ================= */
         let cssPresetsDB = { bubble: [], theme: [] };

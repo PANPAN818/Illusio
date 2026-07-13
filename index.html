@@ -3125,12 +3125,13 @@ body.theme-journal .mini-phone-icon { background: #cc4d4d !important; color: #ff
         <div class="msg-menu-item" style="color: #ff4444;" onclick="msgAction('delete')">删除</div>
     </div>
 
-    <!-- 多选模式下的底部栏 -->
-    <div class="multi-select-bar" id="multiSelectBar">
-        <button class="outline-btn" style="margin:0; width:auto; padding:8px 20px;" onclick="quitMultiSelect()">取消</button>
-        <button class="action-btn" style="margin:0; width:auto; padding:8px 20px; font-size:1em; border-radius:4px;" onclick="shareSelectedMessages()">生成分享图</button>
-        <button class="action-btn" style="margin:0; width:auto; padding:8px 20px; font-size:1em; border-radius:4px; background:#ff4444; color:#fff;" onclick="deleteSelectedMessages()">删除选中</button>
-    </div>
+<!-- 多选模式下的底部栏 -->
+<div class="multi-select-bar" id="multiSelectBar">
+    <button class="outline-btn" style="margin:0; width:auto; padding:8px 12px; font-size:0.9em;" onclick="quitMultiSelect()">取消</button>
+    <button class="action-btn" style="margin:0; width:auto; padding:8px 12px; font-size:0.9em; border-radius:4px;" onclick="copySelectedMessages()">复制文本</button>
+    <button class="action-btn" style="margin:0; width:auto; padding:8px 12px; font-size:0.9em; border-radius:4px;" onclick="shareSelectedMessages()">生成长图</button>
+    <button class="action-btn" style="margin:0; width:auto; padding:8px 12px; font-size:0.9em; border-radius:4px; background:#ff4444; color:#fff;" onclick="deleteSelectedMessages()">删除</button>
+</div>
 
     <div class="input-wrapper">
         <!-- 悬浮表情包/戳一戳 面板 -->
@@ -8358,6 +8359,68 @@ if (action === 'reply') {
             });
         }
         
+        // 按记录的顺序复制选中的多条消息文本
+function copySelectedMessages() {
+    // querySelectorAll 获取到的元素自带从上到下的 DOM 顺序，所以天生就是按时间顺序排列的！
+    const selected = document.querySelectorAll('.msg-checkbox:checked');
+    if (selected.length === 0) { alert('请先选择要复制的消息！'); return; }
+
+    let copyText = "";
+
+    selected.forEach(cb => {
+        const msgEl = cb.closest('.message');
+        const msgId = parseInt(msgEl.dataset.msgId);
+        // 直接去内存数据库里捞干净的数据，避免解析出乱七八糟的 HTML
+        const msgData = allMessagesCache.find(m => m.id === msgId);
+
+        if (msgData) {
+            // 智能判定名字（适配了群聊和单聊）
+            let senderName = msgData.sender === 'user' 
+                ? (currentSettings.userName || '我') 
+                : (msgData.charName || currentSettings.charName || 'TA');
+            
+            let content = msgData.text || '';
+            
+            // 拦截分享卡片和图片，转成干净的文字
+            if (content.includes('class="checkin-chat-card"')) {
+                content = content.includes('攒钱') ? '[攒钱记录]' : '[打卡记录/催更]';
+            } else if (content.includes('class="red-packet-card"')) {
+                content = '[红包]';
+            } else if (content.includes('class="music-chat-card"')) {
+                content = '[分享了一首音乐]';
+            } else if (content.includes('class="sudden-thought-card"')) {
+                content = '[随机念头小卡片]';
+            } else if (msgData.imgUrl) {
+                content = '[图片/表情包]';
+            } else {
+                // 如果是纯文本，清除掉可能存在的 HTML 标签（比如加粗、颜色代码等）
+                content = content.replace(/<[^>]+>/g, '').trim(); 
+            }
+
+            // 拼接格式： 名字：内容 
+            copyText += `${senderName}：${content}\n`;
+        }
+    });
+
+    // 调取系统的剪贴板复制功能
+    const textArea = document.createElement("textarea");
+    textArea.value = copyText.trim();
+    textArea.style.position = "fixed"; textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus(); textArea.select();
+    try {
+        if (document.execCommand('copy')) {
+            alert('已按聊天顺序复制到剪贴板！');
+            quitMultiSelect(); // 复制完自动退出多选模式
+        } else {
+            alert('复制失败，请重试。');
+        }
+    } catch (err) { 
+        alert('复制失败，请重试。'); 
+    }
+    document.body.removeChild(textArea);
+}
+
                 /* ================= 收藏夹与数据统计系统 (日月年+折叠大改版) ================= */
         let currentStarTab = 'day';
 

@@ -6121,7 +6121,17 @@ function resetAllData() {
         }
 
         function promptNewCategory() {
-            const newCat = prompt("请输入新分组名称:");
+            document.getElementById('newCategoryInput').value = '';
+            document.getElementById('newCategoryModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('newCategoryInput').focus(), 100);
+        }
+
+        function closeNewCategoryModal() {
+            document.getElementById('newCategoryModal').style.display = 'none';
+        }
+
+        function confirmNewCategory() {
+            const newCat = document.getElementById('newCategoryInput').value;
             if(newCat && newCat.trim() !== '') {
                 const catName = newCat.trim();
                 if(!currentCategories.includes(catName)) {
@@ -6135,6 +6145,7 @@ function resetAllData() {
                     renderReplyGroups();
                 }
             }
+            closeNewCategoryModal();
         }
 
         async function batchAddNewCards() {
@@ -12982,5 +12993,19 @@ document.addEventListener('click', (e) => {
 }, { passive: true });
 </script>
     
+    <!-- 新建分组精美弹窗 -->
+<div class="modal" id="newCategoryModal" style="z-index: 9999999;">
+    <div class="modal-content" style="max-width: 300px; padding: 25px 20px; text-align: center; gap: 15px; border-radius: 8px; animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+        <div style="font-weight: 900; font-size: 1.3em; color: var(--text-color); font-style: italic; letter-spacing: 1px;">NEW CATEGORY</div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top: 5px;">
+            <input type="text" id="newCategoryInput" placeholder="请输入新分组名称..." style="width:100%; padding:12px; border:3px solid var(--border-color); border-radius:6px; background:var(--bg-color); color:var(--text-color); font-weight:900; font-size:1em; outline:none;">
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 10px;">
+            <button class="outline-btn" style="flex:1; margin:0; padding:12px; border-radius:6px;" onclick="closeNewCategoryModal()">取消</button>
+            <button class="action-btn" style="flex:1; margin:0; padding:12px; border-radius:6px; font-size:1.1em;" onclick="confirmNewCategory()">确定</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
